@@ -18,6 +18,7 @@ class MainActivity : AppCompatActivity() {
         val apiConnection = ApiConnection()
         apiConnection.getNowPlayingList()
         apiConnection.getPopularList()
+        apiConnection.getTopRatedList()
         apiConnection.nowPlayingLiveData.observe(this) { nowPlayingList ->
             if (nowPlayingList != null) {
                 Toast.makeText(this,"Total page ${nowPlayingList.totalPages}",Toast.LENGTH_LONG).show()
@@ -31,6 +32,12 @@ class MainActivity : AppCompatActivity() {
             } else {
                 Toast.makeText(this,"Response null",Toast.LENGTH_LONG).show()
             }
+        }
+        apiConnection.topRatedLiveData.observe(this) { topRatedList ->
+            if (topRatedList != null)
+                Toast.makeText(this,"Top rated ${topRatedList.results[0].title}",Toast.LENGTH_LONG).show()
+            else
+                Toast.makeText(this,"Response null",Toast.LENGTH_LONG).show()
         }
 
     }

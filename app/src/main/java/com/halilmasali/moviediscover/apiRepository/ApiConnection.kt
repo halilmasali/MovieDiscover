@@ -5,6 +5,10 @@ import com.halilmasali.moviediscover.apiRepository.movies.nowPlaying.INowPlaying
 import com.halilmasali.moviediscover.apiRepository.movies.nowPlaying.NowPlayingModelRoot
 import com.halilmasali.moviediscover.apiRepository.movies.popular.IPopularData
 import com.halilmasali.moviediscover.apiRepository.movies.popular.PopularModelRoot
+import com.halilmasali.moviediscover.apiRepository.movies.topRated.ITopRatedData
+import com.halilmasali.moviediscover.apiRepository.movies.topRated.TopRatedModelRoot
+import com.halilmasali.moviediscover.apiRepository.movies.upcoming.IUpcomingData
+import com.halilmasali.moviediscover.apiRepository.movies.upcoming.UpcomingModelRoot
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -16,6 +20,8 @@ class ApiConnection {
 
     val nowPlayingLiveData: MutableLiveData<NowPlayingModelRoot> = MutableLiveData()
     val popularLiveData: MutableLiveData<PopularModelRoot> = MutableLiveData()
+    val topRatedLiveData: MutableLiveData<TopRatedModelRoot> = MutableLiveData()
+    val upcomingLiveData: MutableLiveData<UpcomingModelRoot> = MutableLiveData()
 
     fun getNowPlayingList() {
         val nowPlayingService = ApiClient.getClient().create(INowPlayingData::class.java)
@@ -56,4 +62,46 @@ class ApiConnection {
         })
     }
 
+    fun getTopRatedList() {
+        val topRatedService = ApiClient.getClient().create(ITopRatedData::class.java)
+        val topRatedModelRootCall = topRatedService.createGet(apiKey)
+        topRatedModelRootCall.enqueue(object : Callback<TopRatedModelRoot> {
+            override fun onResponse(
+                call: Call<TopRatedModelRoot>,
+                response: Response<TopRatedModelRoot>
+            ) {
+                if (response.isSuccessful) {
+                    topRatedLiveData.value = response.body() // Update the LiveData with the result
+                } else {
+                    topRatedLiveData.value = null // Update the LiveData with null if the response is not successful
+                }
+            }
+
+            override fun onFailure(call: Call<TopRatedModelRoot>, t: Throwable) {
+                topRatedLiveData.value = null // Update the LiveData with null in case of failure
+            }
+
+        })
+    }
+    fun getUpcomingList() {
+        val upcomingService = ApiClient.getClient().create(IUpcomingData::class.java)
+        val upcomingModelRootCall = upcomingService.createGet(apiKey)
+        upcomingModelRootCall.enqueue(object : Callback<UpcomingModelRoot> {
+            override fun onResponse(
+                call: Call<UpcomingModelRoot>,
+                response: Response<UpcomingModelRoot>
+            ) {
+                if (response.isSuccessful) {
+                    upcomingLiveData.value = response.body() // Update the LiveData with the result
+                } else {
+                    upcomingLiveData.value = null // Update the LiveData with null if the response is not successful
+                }
+            }
+
+            override fun onFailure(call: Call<UpcomingModelRoot>, t: Throwable) {
+                upcomingLiveData.value = null // Update the LiveData with null in case of failure
+            }
+
+        })
+    }
 }
