@@ -16,10 +16,15 @@ class MainActivity : AppCompatActivity() {
 
     fun test(view: View) {
         val apiConnection = ApiConnection()
+        //Movies
         apiConnection.getNowPlayingList()
         apiConnection.getPopularList()
         apiConnection.getTopRatedList()
         apiConnection.getUpcomingList()
+        //Series
+        apiConnection.getAiringTodayList()
+
+        //Movies observers
         apiConnection.nowPlayingLiveData.observe(this) { nowPlayingList ->
             if (nowPlayingList != null) {
                 Toast.makeText(this, "Total page ${nowPlayingList.totalPages}", Toast.LENGTH_LONG)
@@ -57,6 +62,13 @@ class MainActivity : AppCompatActivity() {
             else
                 Toast.makeText(this, "Response null", Toast.LENGTH_LONG).show()
         }
-
+        //Series observers
+        apiConnection.airingTodayLiveData.observe(this) {airingTodayList->
+            if (airingTodayList != null)
+                Toast.makeText(this, "Airing Today: ${airingTodayList.results[0].name}", Toast.LENGTH_LONG)
+                    .show()
+            else
+                Toast.makeText(this, "Response null", Toast.LENGTH_LONG).show()
+        }
     }
 }

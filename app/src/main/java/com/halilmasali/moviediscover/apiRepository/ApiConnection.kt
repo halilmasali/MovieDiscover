@@ -7,6 +7,8 @@ import com.halilmasali.moviediscover.apiRepository.movies.MovieModelRoot
 import com.halilmasali.moviediscover.apiRepository.movies.IPopularData
 import com.halilmasali.moviediscover.apiRepository.movies.ITopRatedData
 import com.halilmasali.moviediscover.apiRepository.movies.IUpcomingData
+import com.halilmasali.moviediscover.apiRepository.series.IAiringTodayData
+import com.halilmasali.moviediscover.apiRepository.series.SeriesModelRoot
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -17,6 +19,8 @@ class ApiConnection {
     val popularLiveData: MutableLiveData<MovieModelRoot> = MutableLiveData()
     val topRatedLiveData: MutableLiveData<MovieModelRoot> = MutableLiveData()
     val upcomingLiveData: MutableLiveData<MovieModelRoot> = MutableLiveData()
+
+    val airingTodayLiveData: MutableLiveData<SeriesModelRoot> = MutableLiveData()
 
     fun getNowPlayingList() {
         val nowPlayingService = ApiClient.getClient().create(INowPlayingData::class.java)
@@ -95,6 +99,27 @@ class ApiConnection {
 
             override fun onFailure(call: Call<MovieModelRoot>, t: Throwable) {
                 upcomingLiveData.value = null // Update the LiveData with null in case of failure
+            }
+        })
+    }
+
+    fun getAiringTodayList() {
+        val airingTodayService = ApiClient.getClient().create(IAiringTodayData::class.java)
+        val airingTodayModelRootCall = airingTodayService.createGet(Constants.ApiKey)
+        airingTodayModelRootCall.enqueue(object : Callback<SeriesModelRoot> {
+            override fun onResponse(
+                call: Call<SeriesModelRoot>,
+                response: Response<SeriesModelRoot>
+            ) {
+                if (response.isSuccessful) {
+                    airingTodayLiveData.value = response.body() // Update the LiveData with the result
+                } else {
+                    airingTodayLiveData.value = null // Update the LiveData with null if the response is not successful
+                }
+            }
+
+            override fun onFailure(call: Call<SeriesModelRoot>, t: Throwable) {
+                airingTodayLiveData.value = null // Update the LiveData with null in case of failure
             }
         })
     }
