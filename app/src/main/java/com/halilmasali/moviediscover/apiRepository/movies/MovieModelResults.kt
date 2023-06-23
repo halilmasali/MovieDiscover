@@ -1,8 +1,8 @@
-package com.halilmasali.moviediscover.apiRepository.movies.topRated
+package com.halilmasali.moviediscover.apiRepository.movies
 
 import com.google.gson.annotations.SerializedName
 
-data class TopRatedModelResults(
+data class MovieModelResults(
     @SerializedName("adult"             ) var adult            : Boolean?       = null,
     @SerializedName("backdrop_path"     ) var backdropPath     : String?        = null,
     @SerializedName("genre_ids"         ) var genreIds         : ArrayList<Int> = arrayListOf(),

@@ -1,5 +1,6 @@
 package com.halilmasali.moviediscover.apiRepository
 
+import com.halilmasali.moviediscover.Constants
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -9,7 +10,7 @@ object ApiClient {
     fun getClient(): Retrofit {
         if (retrofit == null)
             retrofit =Retrofit.Builder()
-                .baseUrl("https://api.themoviedb.org/3/")
+                .baseUrl(Constants.BaseUrl)
                 .addConverterFactory(GsonConverterFactory.create()).build()
         return retrofit as Retrofit
     }

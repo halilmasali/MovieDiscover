@@ -1,33 +1,28 @@
 package com.halilmasali.moviediscover.apiRepository
 
 import androidx.lifecycle.MutableLiveData
-import com.halilmasali.moviediscover.apiRepository.movies.nowPlaying.INowPlayingData
-import com.halilmasali.moviediscover.apiRepository.movies.nowPlaying.NowPlayingModelRoot
-import com.halilmasali.moviediscover.apiRepository.movies.popular.IPopularData
-import com.halilmasali.moviediscover.apiRepository.movies.popular.PopularModelRoot
-import com.halilmasali.moviediscover.apiRepository.movies.topRated.ITopRatedData
-import com.halilmasali.moviediscover.apiRepository.movies.topRated.TopRatedModelRoot
-import com.halilmasali.moviediscover.apiRepository.movies.upcoming.IUpcomingData
-import com.halilmasali.moviediscover.apiRepository.movies.upcoming.UpcomingModelRoot
+import com.halilmasali.moviediscover.Constants
+import com.halilmasali.moviediscover.apiRepository.movies.INowPlayingData
+import com.halilmasali.moviediscover.apiRepository.movies.MovieModelRoot
+import com.halilmasali.moviediscover.apiRepository.movies.IPopularData
+import com.halilmasali.moviediscover.apiRepository.movies.ITopRatedData
+import com.halilmasali.moviediscover.apiRepository.movies.IUpcomingData
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class ApiConnection {
-    private val apiKey = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjNjAyZTg0YWI2ZDg2ZmIwOGZhNjVmNzBkMz" +
-            "A1YWVhYyIsInN1YiI6IjY0OTJiZjlmZjlhYTQ3MDEwNjBlYWZiNSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2Z" +
-            "XJzaW9uIjoxfQ.ygWygBuiAWTaxFQrYBxAMdGfqq3KEPq43gDl4U89Jj4"
 
-    val nowPlayingLiveData: MutableLiveData<NowPlayingModelRoot> = MutableLiveData()
-    val popularLiveData: MutableLiveData<PopularModelRoot> = MutableLiveData()
-    val topRatedLiveData: MutableLiveData<TopRatedModelRoot> = MutableLiveData()
-    val upcomingLiveData: MutableLiveData<UpcomingModelRoot> = MutableLiveData()
+    val nowPlayingLiveData: MutableLiveData<MovieModelRoot> = MutableLiveData()
+    val popularLiveData: MutableLiveData<MovieModelRoot> = MutableLiveData()
+    val topRatedLiveData: MutableLiveData<MovieModelRoot> = MutableLiveData()
+    val upcomingLiveData: MutableLiveData<MovieModelRoot> = MutableLiveData()
 
     fun getNowPlayingList() {
         val nowPlayingService = ApiClient.getClient().create(INowPlayingData::class.java)
-        val nowPlayingModelRootCall = nowPlayingService.createGet(apiKey)
-        nowPlayingModelRootCall.enqueue(object : Callback<NowPlayingModelRoot> {
-            override fun onResponse(call: Call<NowPlayingModelRoot>, response: Response<NowPlayingModelRoot>) {
+        val nowPlayingModelRootCall = nowPlayingService.createGet(Constants.ApiKey)
+        nowPlayingModelRootCall.enqueue(object : Callback<MovieModelRoot> {
+            override fun onResponse(call: Call<MovieModelRoot>, response: Response<MovieModelRoot>) {
                 if (response.isSuccessful) {
                     nowPlayingLiveData.value = response.body() // Update the LiveData with the result
                 } else {
@@ -35,7 +30,7 @@ class ApiConnection {
                 }
             }
 
-            override fun onFailure(call: Call<NowPlayingModelRoot>, t: Throwable) {
+            override fun onFailure(call: Call<MovieModelRoot>, t: Throwable) {
                 nowPlayingLiveData.value = null // Update the LiveData with null in case of failure
             }
         })
@@ -43,11 +38,11 @@ class ApiConnection {
 
     fun getPopularList() {
         val popularService = ApiClient.getClient().create(IPopularData::class.java)
-        val popularModelRootCall = popularService.createGet(apiKey)
-        popularModelRootCall.enqueue(object : Callback<PopularModelRoot> {
+        val popularModelRootCall = popularService.createGet(Constants.ApiKey)
+        popularModelRootCall.enqueue(object : Callback<MovieModelRoot> {
             override fun onResponse(
-                call: Call<PopularModelRoot>,
-                response: Response<PopularModelRoot>
+                call: Call<MovieModelRoot>,
+                response: Response<MovieModelRoot>
             ) {
                 if (response.isSuccessful) {
                     popularLiveData.value = response.body() // Update the LiveData with the result
@@ -56,7 +51,7 @@ class ApiConnection {
                 }
             }
 
-            override fun onFailure(call: Call<PopularModelRoot>, t: Throwable) {
+            override fun onFailure(call: Call<MovieModelRoot>, t: Throwable) {
                 popularLiveData.value = null // Update the LiveData with null in case of failure
             }
         })
@@ -64,11 +59,11 @@ class ApiConnection {
 
     fun getTopRatedList() {
         val topRatedService = ApiClient.getClient().create(ITopRatedData::class.java)
-        val topRatedModelRootCall = topRatedService.createGet(apiKey)
-        topRatedModelRootCall.enqueue(object : Callback<TopRatedModelRoot> {
+        val topRatedModelRootCall = topRatedService.createGet(Constants.ApiKey)
+        topRatedModelRootCall.enqueue(object : Callback<MovieModelRoot> {
             override fun onResponse(
-                call: Call<TopRatedModelRoot>,
-                response: Response<TopRatedModelRoot>
+                call: Call<MovieModelRoot>,
+                response: Response<MovieModelRoot>
             ) {
                 if (response.isSuccessful) {
                     topRatedLiveData.value = response.body() // Update the LiveData with the result
@@ -77,7 +72,7 @@ class ApiConnection {
                 }
             }
 
-            override fun onFailure(call: Call<TopRatedModelRoot>, t: Throwable) {
+            override fun onFailure(call: Call<MovieModelRoot>, t: Throwable) {
                 topRatedLiveData.value = null // Update the LiveData with null in case of failure
             }
 
@@ -85,11 +80,11 @@ class ApiConnection {
     }
     fun getUpcomingList() {
         val upcomingService = ApiClient.getClient().create(IUpcomingData::class.java)
-        val upcomingModelRootCall = upcomingService.createGet(apiKey)
-        upcomingModelRootCall.enqueue(object : Callback<UpcomingModelRoot> {
+        val upcomingModelRootCall = upcomingService.createGet(Constants.ApiKey)
+        upcomingModelRootCall.enqueue(object : Callback<MovieModelRoot> {
             override fun onResponse(
-                call: Call<UpcomingModelRoot>,
-                response: Response<UpcomingModelRoot>
+                call: Call<MovieModelRoot>,
+                response: Response<MovieModelRoot>
             ) {
                 if (response.isSuccessful) {
                     upcomingLiveData.value = response.body() // Update the LiveData with the result
@@ -98,10 +93,9 @@ class ApiConnection {
                 }
             }
 
-            override fun onFailure(call: Call<UpcomingModelRoot>, t: Throwable) {
+            override fun onFailure(call: Call<MovieModelRoot>, t: Throwable) {
                 upcomingLiveData.value = null // Update the LiveData with null in case of failure
             }
-
         })
     }
 }

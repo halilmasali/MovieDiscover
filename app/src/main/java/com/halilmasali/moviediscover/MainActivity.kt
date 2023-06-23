@@ -19,25 +19,43 @@ class MainActivity : AppCompatActivity() {
         apiConnection.getNowPlayingList()
         apiConnection.getPopularList()
         apiConnection.getTopRatedList()
+        apiConnection.getUpcomingList()
         apiConnection.nowPlayingLiveData.observe(this) { nowPlayingList ->
             if (nowPlayingList != null) {
-                Toast.makeText(this,"Total page ${nowPlayingList.totalPages}",Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Total page ${nowPlayingList.totalPages}", Toast.LENGTH_LONG)
+                    .show()
             } else {
-                Toast.makeText(this,"Response null",Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Response null", Toast.LENGTH_LONG).show()
             }
         }
         apiConnection.popularLiveData.observe(this) { popularList ->
             if (popularList != null) {
-                Toast.makeText(this,"The most popular ${popularList.results[0].title}",Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    this,
+                    "The most popular ${popularList.results[0].title}",
+                    Toast.LENGTH_LONG
+                ).show()
+                println(popularList.dates?.minimum)
             } else {
-                Toast.makeText(this,"Response null",Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Response null", Toast.LENGTH_LONG).show()
             }
         }
         apiConnection.topRatedLiveData.observe(this) { topRatedList ->
             if (topRatedList != null)
-                Toast.makeText(this,"Top rated ${topRatedList.results[0].title}",Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    this,
+                    "Top rated ${topRatedList.results[0].title}",
+                    Toast.LENGTH_LONG
+                ).show()
             else
-                Toast.makeText(this,"Response null",Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Response null", Toast.LENGTH_LONG).show()
+        }
+        apiConnection.upcomingLiveData.observe(this) { upcomingList ->
+            if (upcomingList != null)
+                Toast.makeText(this, "Upcoming ${upcomingList.results[0].title}", Toast.LENGTH_LONG)
+                    .show()
+            else
+                Toast.makeText(this, "Response null", Toast.LENGTH_LONG).show()
         }
 
     }

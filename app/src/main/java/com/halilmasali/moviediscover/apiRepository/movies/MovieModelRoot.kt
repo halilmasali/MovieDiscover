@@ -1,11 +1,11 @@
-package com.halilmasali.moviediscover.apiRepository.movies.nowPlaying
+package com.halilmasali.moviediscover.apiRepository.movies
 
 import com.google.gson.annotations.SerializedName
 
-data class NowPlayingModelRoot(
-    @SerializedName("dates"         ) var dates        : NowPlayingModelDates?             = NowPlayingModelDates(),
+data class MovieModelRoot(
+    @SerializedName("dates"         ) var dates        : MovieModelDates?             = MovieModelDates(),
     @SerializedName("page"          ) var page         : Int?                              = null,
-    @SerializedName("results"       ) var results      : ArrayList<NowPlayingModelResults> = arrayListOf(),
+    @SerializedName("results"       ) var results      : ArrayList<MovieModelResults> = arrayListOf(),
     @SerializedName("total_pages"   ) var totalPages   : Int?                              = null,
     @SerializedName("total_results" ) var totalResults : Int?                              = null
 )
