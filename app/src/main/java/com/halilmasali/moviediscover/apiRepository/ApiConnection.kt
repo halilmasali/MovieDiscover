@@ -5,6 +5,7 @@ import com.halilmasali.moviediscover.Constants
 import com.halilmasali.moviediscover.apiRepository.movies.INowPlayingData
 import com.halilmasali.moviediscover.apiRepository.movies.MovieModelRoot
 import com.halilmasali.moviediscover.apiRepository.movies.IPopularData
+import com.halilmasali.moviediscover.apiRepository.movies.ISimilarMoviesData
 import com.halilmasali.moviediscover.apiRepository.movies.ITopRatedData
 import com.halilmasali.moviediscover.apiRepository.movies.IUpcomingData
 import com.halilmasali.moviediscover.apiRepository.series.IAiringTodayData
@@ -19,11 +20,12 @@ class ApiConnection {
     val popularLiveData: MutableLiveData<MovieModelRoot> = MutableLiveData()
     val topRatedLiveData: MutableLiveData<MovieModelRoot> = MutableLiveData()
     val upcomingLiveData: MutableLiveData<MovieModelRoot> = MutableLiveData()
+    val similarMoviesLiveData: MutableLiveData<MovieModelRoot> = MutableLiveData()
 
     val airingTodayLiveData: MutableLiveData<SeriesModelRoot> = MutableLiveData()
 
     fun getNowPlayingList() {
-        val nowPlayingService = ApiClient.getClient().create(INowPlayingData::class.java)
+        val nowPlayingService = ApiClient.getClient(Constants.ApiBaseUrl).create(INowPlayingData::class.java)
         val nowPlayingModelRootCall = nowPlayingService.createGet(Constants.ApiKey)
         nowPlayingModelRootCall.enqueue(object : Callback<MovieModelRoot> {
             override fun onResponse(call: Call<MovieModelRoot>, response: Response<MovieModelRoot>) {
@@ -41,7 +43,7 @@ class ApiConnection {
     }
 
     fun getPopularList() {
-        val popularService = ApiClient.getClient().create(IPopularData::class.java)
+        val popularService = ApiClient.getClient(Constants.ApiBaseUrl).create(IPopularData::class.java)
         val popularModelRootCall = popularService.createGet(Constants.ApiKey)
         popularModelRootCall.enqueue(object : Callback<MovieModelRoot> {
             override fun onResponse(
@@ -62,7 +64,7 @@ class ApiConnection {
     }
 
     fun getTopRatedList() {
-        val topRatedService = ApiClient.getClient().create(ITopRatedData::class.java)
+        val topRatedService = ApiClient.getClient(Constants.ApiBaseUrl).create(ITopRatedData::class.java)
         val topRatedModelRootCall = topRatedService.createGet(Constants.ApiKey)
         topRatedModelRootCall.enqueue(object : Callback<MovieModelRoot> {
             override fun onResponse(
@@ -83,7 +85,7 @@ class ApiConnection {
         })
     }
     fun getUpcomingList() {
-        val upcomingService = ApiClient.getClient().create(IUpcomingData::class.java)
+        val upcomingService = ApiClient.getClient(Constants.ApiBaseUrl).create(IUpcomingData::class.java)
         val upcomingModelRootCall = upcomingService.createGet(Constants.ApiKey)
         upcomingModelRootCall.enqueue(object : Callback<MovieModelRoot> {
             override fun onResponse(
@@ -104,7 +106,7 @@ class ApiConnection {
     }
 
     fun getAiringTodayList() {
-        val airingTodayService = ApiClient.getClient().create(IAiringTodayData::class.java)
+        val airingTodayService = ApiClient.getClient(Constants.ApiBaseUrl).create(IAiringTodayData::class.java)
         val airingTodayModelRootCall = airingTodayService.createGet(Constants.ApiKey)
         airingTodayModelRootCall.enqueue(object : Callback<SeriesModelRoot> {
             override fun onResponse(
@@ -121,6 +123,28 @@ class ApiConnection {
             override fun onFailure(call: Call<SeriesModelRoot>, t: Throwable) {
                 airingTodayLiveData.value = null // Update the LiveData with null in case of failure
             }
+        })
+    }
+
+    fun getSimilarMovies(movieId:Int){
+        val similarMoviesService = ApiClient.getClient(Constants.ApiBaseUrl).create(ISimilarMoviesData::class.java)
+        val similarMoviesModelRootCall = similarMoviesService.createGet(Constants.ApiKey,movieId)
+        similarMoviesModelRootCall.enqueue(object : Callback<MovieModelRoot> {
+            override fun onResponse(
+                call: Call<MovieModelRoot>,
+                response: Response<MovieModelRoot>
+            ) {
+                if (response.isSuccessful){
+                    similarMoviesLiveData.value = response.body()// Update the LiveData with the result
+                } else {
+                    similarMoviesLiveData.value = null // Update the LiveData with null if the response is not successful
+                }
+            }
+
+            override fun onFailure(call: Call<MovieModelRoot>, t: Throwable) {
+                similarMoviesLiveData.value = null // Update the LiveData with null in case of failure
+            }
+
         })
     }
 }

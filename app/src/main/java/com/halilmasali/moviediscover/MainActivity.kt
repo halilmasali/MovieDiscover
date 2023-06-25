@@ -21,6 +21,7 @@ class MainActivity : AppCompatActivity() {
         apiConnection.getPopularList()
         apiConnection.getTopRatedList()
         apiConnection.getUpcomingList()
+        apiConnection.getSimilarMovies(25)
         //Series
         apiConnection.getAiringTodayList()
 
@@ -61,6 +62,11 @@ class MainActivity : AppCompatActivity() {
                     .show()
             else
                 Toast.makeText(this, "Response null", Toast.LENGTH_LONG).show()
+        }
+        apiConnection.similarMoviesLiveData.observe(this) {similarMovies ->
+            if (similarMovies != null)
+                Toast.makeText(this, "Similar ${similarMovies.results[0].title}", Toast.LENGTH_LONG)
+                    .show()
         }
         //Series observers
         apiConnection.airingTodayLiveData.observe(this) {airingTodayList->
