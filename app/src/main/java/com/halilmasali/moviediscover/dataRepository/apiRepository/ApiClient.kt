@@ -1,4 +1,4 @@
-package com.halilmasali.moviediscover.apiRepository
+package com.halilmasali.moviediscover.dataRepository.apiRepository
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

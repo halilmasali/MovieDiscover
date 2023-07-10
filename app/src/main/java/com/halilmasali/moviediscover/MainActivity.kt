@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.halilmasali.moviediscover.apiRepository.ApiConnection
+import com.halilmasali.moviediscover.dataRepository.apiRepository.ApiConnection
 
 
 class MainActivity : AppCompatActivity() {
@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity() {
         }
         //endregion
 
-        //Series observers
+        //region Series observers
         apiConnection.getSeriesAiringTodayList().observe(this) { airingTodayList ->
             if (airingTodayList != null)
                 Toast.makeText(this, "Airing Today: ${airingTodayList.results[0].name}", Toast.LENGTH_LONG)
@@ -76,5 +76,6 @@ class MainActivity : AppCompatActivity() {
             else
                 Toast.makeText(this, "Response null", Toast.LENGTH_LONG).show()
         }
+        //endregion
     }
 }

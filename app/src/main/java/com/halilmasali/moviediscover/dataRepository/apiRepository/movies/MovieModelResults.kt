@@ -1,4 +1,4 @@
-package com.halilmasali.moviediscover.apiRepository.movies
+package com.halilmasali.moviediscover.dataRepository.apiRepository.movies
 
 import com.google.gson.annotations.SerializedName
 

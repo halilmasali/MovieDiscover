@@ -1,4 +1,4 @@
-package com.halilmasali.moviediscover.apiRepository
+package com.halilmasali.moviediscover.dataRepository.apiRepository
 
 import okhttp3.ResponseBody
 import retrofit2.Call

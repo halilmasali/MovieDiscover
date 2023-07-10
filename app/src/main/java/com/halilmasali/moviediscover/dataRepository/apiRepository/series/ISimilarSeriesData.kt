@@ -1,4 +1,4 @@
-package com.halilmasali.moviediscover.apiRepository.series
+package com.halilmasali.moviediscover.dataRepository.apiRepository.series
 
 import retrofit2.Call
 import retrofit2.http.GET
