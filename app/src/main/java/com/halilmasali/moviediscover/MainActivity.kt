@@ -16,17 +16,11 @@ class MainActivity : AppCompatActivity() {
 
     fun test(view: View) {
         val apiConnection = ApiConnection()
-        //Movies
-        apiConnection.getNowPlayingList()
-        apiConnection.getPopularList()
-        apiConnection.getTopRatedList()
-        apiConnection.getUpcomingList()
-        apiConnection.getSimilarMovies(25)
-        //Series
-        apiConnection.getAiringTodayList()
+        // This temp request it could be changed
+        apiConnection.getImages("fiVW06jE7z9YnO4trhaMEdclSiC.jpg")
 
-        //Movies observers
-        apiConnection.nowPlayingLiveData.observe(this) { nowPlayingList ->
+        //region Movies observers
+        apiConnection.getMovieNowPlayingList().observe(this) { nowPlayingList ->
             if (nowPlayingList != null) {
                 Toast.makeText(this, "Total page ${nowPlayingList.totalPages}", Toast.LENGTH_LONG)
                     .show()
@@ -34,42 +28,48 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "Response null", Toast.LENGTH_LONG).show()
             }
         }
-        apiConnection.popularLiveData.observe(this) { popularList ->
+
+        apiConnection.getMoviePopularList().observe(this) { popularList ->
             if (popularList != null) {
                 Toast.makeText(
                     this,
                     "The most popular ${popularList.results[0].title}",
                     Toast.LENGTH_LONG
                 ).show()
-                println(popularList.dates?.minimum)
             } else {
                 Toast.makeText(this, "Response null", Toast.LENGTH_LONG).show()
             }
         }
-        apiConnection.topRatedLiveData.observe(this) { topRatedList ->
-            if (topRatedList != null)
+
+        apiConnection.getMovieTopRatedList().observe(this) { topRatedList ->
+            if (topRatedList != null) {
                 Toast.makeText(
                     this,
-                    "Top rated ${topRatedList.results[0].title}",
+                    "Top Rated ${topRatedList.results[0].title}",
                     Toast.LENGTH_LONG
                 ).show()
-            else
+            } else {
                 Toast.makeText(this, "Response null", Toast.LENGTH_LONG).show()
+            }
         }
-        apiConnection.upcomingLiveData.observe(this) { upcomingList ->
+
+        apiConnection.getMovieUpcomingList().observe(this) { upcomingList ->
             if (upcomingList != null)
                 Toast.makeText(this, "Upcoming ${upcomingList.results[0].title}", Toast.LENGTH_LONG)
                     .show()
             else
                 Toast.makeText(this, "Response null", Toast.LENGTH_LONG).show()
         }
-        apiConnection.similarMoviesLiveData.observe(this) {similarMovies ->
+
+        apiConnection.getMoviesSimilarList(25).observe(this) { similarMovies ->
             if (similarMovies != null)
                 Toast.makeText(this, "Similar ${similarMovies.results[0].title}", Toast.LENGTH_LONG)
                     .show()
         }
+        //endregion
+
         //Series observers
-        apiConnection.airingTodayLiveData.observe(this) {airingTodayList->
+        apiConnection.getSeriesAiringTodayList().observe(this) { airingTodayList ->
             if (airingTodayList != null)
                 Toast.makeText(this, "Airing Today: ${airingTodayList.results[0].name}", Toast.LENGTH_LONG)
                     .show()
