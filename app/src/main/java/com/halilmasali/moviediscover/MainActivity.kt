@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.halilmasali.moviediscover.dataRepository.DataRepository
 import com.halilmasali.moviediscover.dataRepository.apiRepository.ApiConnection
 
 
@@ -18,6 +19,9 @@ class MainActivity : AppCompatActivity() {
         val apiConnection = ApiConnection()
         // This temp request it could be changed
         apiConnection.getImages("fiVW06jE7z9YnO4trhaMEdclSiC.jpg")
+        // TODO for data repo test
+        val dataRepository = DataRepository(this,this)
+        dataRepository.series()
 
         //region Movies observers
         apiConnection.getMovieNowPlayingList().observe(this) { nowPlayingList ->
