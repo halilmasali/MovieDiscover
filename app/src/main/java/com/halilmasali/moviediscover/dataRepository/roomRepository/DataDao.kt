@@ -7,15 +7,9 @@ import androidx.room.Query
 
 @Dao
 interface DataDao {
-    //    @Query("SELECT * FROM local_movie_data")
-//    suspend fun getAllData(): LocalMovieData
-//
-//    @Insert(onConflict = OnConflictStrategy.REPLACE)
-//    suspend fun insertData(data: LocalMovieData)
-    // suspend problem
     @Query("SELECT * FROM local_movie_data")
-    fun getAllData(): LocalMovieData
+    fun getAllData(): Array<LocalMovieData>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertData(data: LocalMovieData)
+    fun insertData(localMovieData: LocalMovieData)
 }

@@ -19,11 +19,11 @@ class MainActivity : AppCompatActivity() {
 
     fun test(view: View) {
         val apiConnection = ApiConnection()
-        // This temp request it could be changed
-        apiConnection.getImages("fiVW06jE7z9YnO4trhaMEdclSiC.jpg")
         // TODO for data repo test
         val dataRepository = DataRepository(this,this)
-        dataRepository.series()
+        dataRepository.getSeriesAiringToday()
+        dataRepository.getSeriesPopular()
+        dataRepository.getDataFromCache()
 
         //region Movies observers
         apiConnection.getMovieNowPlayingList().observe(this) { nowPlayingList ->
