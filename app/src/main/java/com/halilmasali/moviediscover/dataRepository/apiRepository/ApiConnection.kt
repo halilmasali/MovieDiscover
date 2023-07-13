@@ -28,7 +28,6 @@ class ApiConnection: ViewModel() {
     //region Movies Requests
     fun getMovieNowPlayingList(): LiveData<MovieModelRoot> {
         val nowPlayingLiveData: MutableLiveData<MovieModelRoot> = MutableLiveData()
-
         viewModelScope.launch {
             val nowPlayingService = ApiClient.getClient(Constants.ApiBaseUrl)
                 .create(INowPlayingData::class.java)

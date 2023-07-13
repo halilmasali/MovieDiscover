@@ -4,28 +4,21 @@ import android.content.Context
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.room.Room
 import com.halilmasali.moviediscover.Constants
 import com.halilmasali.moviediscover.dataRepository.apiRepository.ApiConnection
 import com.halilmasali.moviediscover.dataRepository.apiRepository.series.SeriesModelResults
-import com.halilmasali.moviediscover.dataRepository.roomRepository.LocalMoviesData
 import com.halilmasali.moviediscover.dataRepository.roomRepository.LocalSeriesData
-import com.halilmasali.moviediscover.dataRepository.roomRepository.MovieDatabase
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.halilmasali.moviediscover.dataRepository.roomRepository.RoomConnection
 
 class DataRepository(private val lifecycleOwner: LifecycleOwner, context: Context) {
-    private val apiConnection = ApiConnection()
-    private val database =
-        Room.databaseBuilder(context, MovieDatabase::class.java, MovieDatabase.DATABASE_NAME)
-            .build()
+    private val api = ApiConnection()
+    private val room = RoomConnection(context)
 
     //region Series Func
     fun getSeriesAiringToday(): LiveData<ArrayList<SeriesModelResults>> {
         val airingTodayLiveData: MutableLiveData<ArrayList<SeriesModelResults>> = MutableLiveData()
         // Used if cache data exists and has not expired.
-        getDataFromCacheByCategory<LocalSeriesData>("SeriesAiringToday")
+        room.getDataFromCacheByCategory<LocalSeriesData>("SeriesAiringToday")
             .observe(lifecycleOwner) { cacheData ->
                 if (cacheData != null) {
                     airingTodayLiveData.value = cacheData.data
@@ -33,7 +26,7 @@ class DataRepository(private val lifecycleOwner: LifecycleOwner, context: Contex
                 } else {
                     //If the cache data has expired or null,
                     // data is taken from the api and saves it for the cache.
-                    apiConnection.getSeriesAiringTodayList()
+                    api.getSeriesAiringTodayList()
                         .observe(lifecycleOwner) { airingTodayList ->
                             if (airingTodayList != null) {
                                 val data = LocalSeriesData(
@@ -42,7 +35,7 @@ class DataRepository(private val lifecycleOwner: LifecycleOwner, context: Contex
                                     Constants.ExpirationTime + System.currentTimeMillis(),
                                     airingTodayList.results
                                 )
-                                insertDataToCache(data, database)
+                                room.insertDataToCache(data)
                                 airingTodayLiveData.value = airingTodayList.results
                             } else
                                 println("Response null")
@@ -55,7 +48,7 @@ class DataRepository(private val lifecycleOwner: LifecycleOwner, context: Contex
     fun getSeriesOnTheAir(): LiveData<ArrayList<SeriesModelResults>> {
         val onTheAirLiveData: MutableLiveData<ArrayList<SeriesModelResults>> = MutableLiveData()
         // Used if cache data exists and has not expired.
-        getDataFromCacheByCategory<LocalSeriesData>("SeriesOnTheAir")
+        room.getDataFromCacheByCategory<LocalSeriesData>("SeriesOnTheAir")
             .observe(lifecycleOwner) { cacheData ->
                 if (cacheData != null) {
                     onTheAirLiveData.value = cacheData.data
@@ -63,7 +56,7 @@ class DataRepository(private val lifecycleOwner: LifecycleOwner, context: Contex
                 } else {
                     //If the cache data has expired or null,
                     // data is taken from the api and saves it for the cache.
-                    apiConnection.getSeriesOnTheAirList()
+                    api.getSeriesOnTheAirList()
                         .observe(lifecycleOwner) { onTheAir ->
                             if (onTheAir != null) {
                                 val data = LocalSeriesData(
@@ -72,7 +65,7 @@ class DataRepository(private val lifecycleOwner: LifecycleOwner, context: Contex
                                     Constants.ExpirationTime + System.currentTimeMillis(),
                                     onTheAir.results
                                 )
-                                insertDataToCache(data, database)
+                                room.insertDataToCache(data)
                                 onTheAirLiveData.value = onTheAir.results
                             } else
                                 println("Response null")
@@ -85,7 +78,7 @@ class DataRepository(private val lifecycleOwner: LifecycleOwner, context: Contex
     fun getSeriesPopular(): LiveData<ArrayList<SeriesModelResults>> {
         val popularLiveData: MutableLiveData<ArrayList<SeriesModelResults>> = MutableLiveData()
         // Used if cache data exists and has not expired.
-        getDataFromCacheByCategory<LocalSeriesData>("SeriesPopular")
+        room.getDataFromCacheByCategory<LocalSeriesData>("SeriesPopular")
             .observe(lifecycleOwner) { cacheData ->
                 if (cacheData != null) {
                     popularLiveData.value = cacheData.data
@@ -93,7 +86,7 @@ class DataRepository(private val lifecycleOwner: LifecycleOwner, context: Contex
                 } else {
                     //If the cache data has expired or null,
                     // data is taken from the api and saves it for the cache.
-                    apiConnection.getSeriesPopularList()
+                    api.getSeriesPopularList()
                         .observe(lifecycleOwner) { popular ->
                             if (popular != null) {
                                 val data = LocalSeriesData(
@@ -102,7 +95,7 @@ class DataRepository(private val lifecycleOwner: LifecycleOwner, context: Contex
                                     Constants.ExpirationTime + System.currentTimeMillis(),
                                     popular.results
                                 )
-                                insertDataToCache(data, database)
+                                room.insertDataToCache(data)
                                 popularLiveData.value = popular.results
                             } else
                                 println("Response null")
@@ -115,7 +108,7 @@ class DataRepository(private val lifecycleOwner: LifecycleOwner, context: Contex
     fun getSeriesTopRated(): LiveData<ArrayList<SeriesModelResults>> {
         val topRatedLiveData: MutableLiveData<ArrayList<SeriesModelResults>> = MutableLiveData()
         // Used if cache data exists and has not expired.
-        getDataFromCacheByCategory<LocalSeriesData>("SeriesTopRated")
+        room.getDataFromCacheByCategory<LocalSeriesData>("SeriesTopRated")
             .observe(lifecycleOwner) { cacheData ->
                 if (cacheData != null) {
                     topRatedLiveData.value = cacheData.data
@@ -123,7 +116,7 @@ class DataRepository(private val lifecycleOwner: LifecycleOwner, context: Contex
                 } else {
                     //If the cache data has expired or null,
                     // data is taken from the api and saves it for the cache.
-                    apiConnection.getSeriesTopRatedList()
+                    api.getSeriesTopRatedList()
                         .observe(lifecycleOwner) { topRated ->
                             if (topRated != null) {
                                 val data = LocalSeriesData(
@@ -132,7 +125,7 @@ class DataRepository(private val lifecycleOwner: LifecycleOwner, context: Contex
                                     Constants.ExpirationTime + System.currentTimeMillis(),
                                     topRated.results
                                 )
-                                insertDataToCache(data, database)
+                                room.insertDataToCache(data)
                                 topRatedLiveData.value = topRated.results
                             } else
                                 println("Response null")
@@ -143,7 +136,7 @@ class DataRepository(private val lifecycleOwner: LifecycleOwner, context: Contex
     }
 
     fun getSeriesSimilar(seriesId: String) {
-        apiConnection.getSeriesSimilarList(seriesId).observe(lifecycleOwner) { similar ->
+        api.getSeriesSimilarList(seriesId).observe(lifecycleOwner) { similar ->
             if (similar != null) {
                 println("Series Similar: ${similar.results[0].name}")
                 val data = LocalSeriesData(
@@ -152,58 +145,11 @@ class DataRepository(private val lifecycleOwner: LifecycleOwner, context: Contex
                     Constants.ExpirationTime,
                     similar.results
                 )
-                insertDataToCache(data, database)
+                room.insertDataToCache(data)
             } else
                 println("Response null")
         }
     }
     // endregion
 
-    private fun insertDataToCache(data: LocalSeriesData, database: MovieDatabase) {
-        CoroutineScope(Dispatchers.IO).launch {
-            val dataDao = database.dataDao()
-            dataDao.insertSeriesData(data)
-        }
-    }
-
-    fun getDataFromCache() {
-        CoroutineScope(Dispatchers.IO).launch {
-            val dataDao = database.dataDao()
-            val data = dataDao.getAllSeriesData()
-            println("Data from cache: ${data}")
-        }
-    }
-
-    private fun <T> getDataFromCacheByCategory(category: String): LiveData<T> {
-        val liveData: MutableLiveData<T> = MutableLiveData()
-        CoroutineScope(Dispatchers.IO).launch {
-            val dataDao = database.dataDao()
-            val data = dataDao.getSeriesDataByCategory(category)
-            if (checkExpirationTime(data))
-                liveData.postValue(data as T)
-            else
-                liveData.postValue(null)
-            println("Data from cache: $data")
-        }.invokeOnCompletion {
-            return@invokeOnCompletion
-        }
-        return liveData
-    }
-
-    private fun checkExpirationTime(data: Any?): Boolean {
-        if (data == null)
-            return false
-        val currentTimeInMillis = System.currentTimeMillis()
-        return when (data) {
-            is LocalSeriesData -> {
-                data.expirationTime > currentTimeInMillis
-            }
-            is LocalMoviesData -> {
-                data.expirationTime > currentTimeInMillis
-            }
-            else -> {
-                false
-            }
-        }
-    }
 }
