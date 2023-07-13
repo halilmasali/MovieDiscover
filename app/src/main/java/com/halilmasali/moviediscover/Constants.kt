@@ -6,5 +6,5 @@ object Constants {
             "lcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.ygWygBuiAWTaxFQrYBxAMdGfqq3KEPq43gDl4U89Jj4"
     const val ApiBaseUrl = "https://api.themoviedb.org/3/"
     const val ImageBaseUrl = "https://image.tmdb.org/t/p/"
-    const val ExpirationTime:Long = 1000
+    const val ExpirationTime:Long = 600000 //10 dk
 }

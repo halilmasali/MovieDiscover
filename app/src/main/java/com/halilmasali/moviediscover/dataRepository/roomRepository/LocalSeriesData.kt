@@ -6,9 +6,9 @@ import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import com.halilmasali.moviediscover.dataRepository.apiRepository.series.SeriesModelResults
 
-@Entity(tableName = "local_movie_data")
+@Entity(tableName = "local_series_data")
 @TypeConverters(Converters::class)
-data class LocalMovieData(
+data class LocalSeriesData(
     @PrimaryKey(autoGenerate = true) val id:Int,
     @ColumnInfo(name = "category") val category:String,
     @ColumnInfo(name ="expiration_time") val expirationTime: Long,

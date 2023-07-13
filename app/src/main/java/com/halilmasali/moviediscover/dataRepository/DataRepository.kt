@@ -8,90 +8,145 @@ import androidx.room.Room
 import com.halilmasali.moviediscover.Constants
 import com.halilmasali.moviediscover.dataRepository.apiRepository.ApiConnection
 import com.halilmasali.moviediscover.dataRepository.apiRepository.series.SeriesModelResults
-import com.halilmasali.moviediscover.dataRepository.roomRepository.LocalMovieData
+import com.halilmasali.moviediscover.dataRepository.roomRepository.LocalMoviesData
+import com.halilmasali.moviediscover.dataRepository.roomRepository.LocalSeriesData
 import com.halilmasali.moviediscover.dataRepository.roomRepository.MovieDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class DataRepository(private val lifecycleOwner: LifecycleOwner, private val context: Context) {
+class DataRepository(private val lifecycleOwner: LifecycleOwner, context: Context) {
     private val apiConnection = ApiConnection()
     private val database =
         Room.databaseBuilder(context, MovieDatabase::class.java, MovieDatabase.DATABASE_NAME)
             .build()
 
-    fun getSeriesAiringToday(): LiveData<SeriesModelResults> {
-        val airingTodayLiveData: MutableLiveData<SeriesModelResults> = MutableLiveData()
-
-        apiConnection.getSeriesAiringTodayList().observe(lifecycleOwner) { airingTodayList ->
-            if (airingTodayList != null) {
-                println("Airing Today: ${airingTodayList.results[0].name}")
-                val data = LocalMovieData(
-                    1,
-                    "SeriesAiringToday",
-                    Constants.ExpirationTime,
-                    airingTodayList.results
-                )
-                insertDataToCache(data, database)
-            } else
-                println("Response null")
-        }
+    //region Series Func
+    fun getSeriesAiringToday(): LiveData<ArrayList<SeriesModelResults>> {
+        val airingTodayLiveData: MutableLiveData<ArrayList<SeriesModelResults>> = MutableLiveData()
+        // Used if cache data exists and has not expired.
+        getDataFromCacheByCategory<LocalSeriesData>("SeriesAiringToday")
+            .observe(lifecycleOwner) { cacheData ->
+                if (cacheData != null) {
+                    airingTodayLiveData.value = cacheData.data
+                    println("Cache value")
+                } else {
+                    //If the cache data has expired or null,
+                    // data is taken from the api and saves it for the cache.
+                    apiConnection.getSeriesAiringTodayList()
+                        .observe(lifecycleOwner) { airingTodayList ->
+                            if (airingTodayList != null) {
+                                val data = LocalSeriesData(
+                                    1,
+                                    "SeriesAiringToday",
+                                    Constants.ExpirationTime + System.currentTimeMillis(),
+                                    airingTodayList.results
+                                )
+                                insertDataToCache(data, database)
+                                airingTodayLiveData.value = airingTodayList.results
+                            } else
+                                println("Response null")
+                        }
+                }
+            }
         return airingTodayLiveData
     }
 
-    fun getSeriesOnTheAir() {
-        apiConnection.getSeriesOnTheAirList().observe(lifecycleOwner) { onTheAir->
-            if (onTheAir != null){
-                println("On The Air: ${onTheAir.results[0].name}")
-                val data = LocalMovieData(
-                    2,
-                    "SeriesOnTheAir",
-                    Constants.ExpirationTime,
-                    onTheAir.results
-                )
-                insertDataToCache(data, database)
-            } else
-                println("Response null")
-        }
+    fun getSeriesOnTheAir(): LiveData<ArrayList<SeriesModelResults>> {
+        val onTheAirLiveData: MutableLiveData<ArrayList<SeriesModelResults>> = MutableLiveData()
+        // Used if cache data exists and has not expired.
+        getDataFromCacheByCategory<LocalSeriesData>("SeriesOnTheAir")
+            .observe(lifecycleOwner) { cacheData ->
+                if (cacheData != null) {
+                    onTheAirLiveData.value = cacheData.data
+                    println("Cache value")
+                } else {
+                    //If the cache data has expired or null,
+                    // data is taken from the api and saves it for the cache.
+                    apiConnection.getSeriesOnTheAirList()
+                        .observe(lifecycleOwner) { onTheAir ->
+                            if (onTheAir != null) {
+                                val data = LocalSeriesData(
+                                    1,
+                                    "SeriesOnTheAir",
+                                    Constants.ExpirationTime + System.currentTimeMillis(),
+                                    onTheAir.results
+                                )
+                                insertDataToCache(data, database)
+                                onTheAirLiveData.value = onTheAir.results
+                            } else
+                                println("Response null")
+                        }
+                }
+            }
+        return onTheAirLiveData
     }
 
-    fun getSeriesPopular() {
-        apiConnection.getSeriesPopularList().observe(lifecycleOwner) { popular->
-            if (popular != null){
-                println("Series Popular: ${popular.results[0].name}")
-                val data = LocalMovieData(
-                    3,
-                    "SeriesPopular",
-                    Constants.ExpirationTime,
-                    popular.results
-                )
-                insertDataToCache(data, database)
-            } else
-                println("Response null")
-        }
+    fun getSeriesPopular(): LiveData<ArrayList<SeriesModelResults>> {
+        val popularLiveData: MutableLiveData<ArrayList<SeriesModelResults>> = MutableLiveData()
+        // Used if cache data exists and has not expired.
+        getDataFromCacheByCategory<LocalSeriesData>("SeriesPopular")
+            .observe(lifecycleOwner) { cacheData ->
+                if (cacheData != null) {
+                    popularLiveData.value = cacheData.data
+                    println("Cache value")
+                } else {
+                    //If the cache data has expired or null,
+                    // data is taken from the api and saves it for the cache.
+                    apiConnection.getSeriesPopularList()
+                        .observe(lifecycleOwner) { popular ->
+                            if (popular != null) {
+                                val data = LocalSeriesData(
+                                    1,
+                                    "SeriesPopular",
+                                    Constants.ExpirationTime + System.currentTimeMillis(),
+                                    popular.results
+                                )
+                                insertDataToCache(data, database)
+                                popularLiveData.value = popular.results
+                            } else
+                                println("Response null")
+                        }
+                }
+            }
+        return popularLiveData
     }
 
-    fun getSeriesTopRated() {
-        apiConnection.getSeriesTopRatedList().observe(lifecycleOwner) { topRated->
-            if (topRated != null){
-                println("Series Top Rated: ${topRated.results[0].name}")
-                val data = LocalMovieData(
-                    4,
-                    "SeriesTopRated",
-                    Constants.ExpirationTime,
-                    topRated.results
-                )
-                insertDataToCache(data, database)
-            } else
-                println("Response null")
-        }
+    fun getSeriesTopRated(): LiveData<ArrayList<SeriesModelResults>> {
+        val topRatedLiveData: MutableLiveData<ArrayList<SeriesModelResults>> = MutableLiveData()
+        // Used if cache data exists and has not expired.
+        getDataFromCacheByCategory<LocalSeriesData>("SeriesTopRated")
+            .observe(lifecycleOwner) { cacheData ->
+                if (cacheData != null) {
+                    topRatedLiveData.value = cacheData.data
+                    println("Cache value")
+                } else {
+                    //If the cache data has expired or null,
+                    // data is taken from the api and saves it for the cache.
+                    apiConnection.getSeriesTopRatedList()
+                        .observe(lifecycleOwner) { topRated ->
+                            if (topRated != null) {
+                                val data = LocalSeriesData(
+                                    1,
+                                    "SeriesTopRated",
+                                    Constants.ExpirationTime + System.currentTimeMillis(),
+                                    topRated.results
+                                )
+                                insertDataToCache(data, database)
+                                topRatedLiveData.value = topRated.results
+                            } else
+                                println("Response null")
+                        }
+                }
+            }
+        return topRatedLiveData
     }
 
     fun getSeriesSimilar(seriesId: String) {
-        apiConnection.getSeriesSimilarList(seriesId).observe(lifecycleOwner) { similar->
-            if (similar != null){
+        apiConnection.getSeriesSimilarList(seriesId).observe(lifecycleOwner) { similar ->
+            if (similar != null) {
                 println("Series Similar: ${similar.results[0].name}")
-                val data = LocalMovieData(
+                val data = LocalSeriesData(
                     4,
                     "SeriesSimilar",
                     Constants.ExpirationTime,
@@ -102,25 +157,53 @@ class DataRepository(private val lifecycleOwner: LifecycleOwner, private val con
                 println("Response null")
         }
     }
+    // endregion
 
-
-
-    fun insertDataToCache(data: LocalMovieData, database: MovieDatabase) {
+    private fun insertDataToCache(data: LocalSeriesData, database: MovieDatabase) {
         CoroutineScope(Dispatchers.IO).launch {
             val dataDao = database.dataDao()
-            dataDao.insertData(data)
+            dataDao.insertSeriesData(data)
         }
     }
 
     fun getDataFromCache() {
-        val database =
-            Room.databaseBuilder(context, MovieDatabase::class.java, MovieDatabase.DATABASE_NAME)
-                .build()
         CoroutineScope(Dispatchers.IO).launch {
             val dataDao = database.dataDao()
-            val data = dataDao.getAllData()
-            println("Data from cache: ${data[0]}")
-            println("Data from cache: ${data[1]}")
+            val data = dataDao.getAllSeriesData()
+            println("Data from cache: ${data}")
+        }
+    }
+
+    private fun <T> getDataFromCacheByCategory(category: String): LiveData<T> {
+        val liveData: MutableLiveData<T> = MutableLiveData()
+        CoroutineScope(Dispatchers.IO).launch {
+            val dataDao = database.dataDao()
+            val data = dataDao.getSeriesDataByCategory(category)
+            if (checkExpirationTime(data))
+                liveData.postValue(data as T)
+            else
+                liveData.postValue(null)
+            println("Data from cache: $data")
+        }.invokeOnCompletion {
+            return@invokeOnCompletion
+        }
+        return liveData
+    }
+
+    private fun checkExpirationTime(data: Any?): Boolean {
+        if (data == null)
+            return false
+        val currentTimeInMillis = System.currentTimeMillis()
+        return when (data) {
+            is LocalSeriesData -> {
+                data.expirationTime > currentTimeInMillis
+            }
+            is LocalMoviesData -> {
+                data.expirationTime > currentTimeInMillis
+            }
+            else -> {
+                false
+            }
         }
     }
 }
