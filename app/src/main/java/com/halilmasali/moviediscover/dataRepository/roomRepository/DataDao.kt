@@ -30,7 +30,7 @@ interface DataDao {
     fun getMoviesDataByCategory(category: String): LocalMoviesData
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertMoviesData(localSeriesData: LocalMoviesData)
+    fun insertMoviesData(localMoviesData: LocalMoviesData)
 
     @Delete
     fun deleteData(data: LocalMoviesData)

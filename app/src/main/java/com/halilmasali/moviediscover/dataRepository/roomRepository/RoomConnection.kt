@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 
 class RoomConnection(context: Context) {
 
-    private val database = Room.databaseBuilder(
+    val database = Room.databaseBuilder(
         context,
         MovieDatabase::class.java, MovieDatabase.DATABASE_NAME
     ).build()
@@ -25,11 +25,15 @@ class RoomConnection(context: Context) {
         }
     }
 
-    fun <T> getDataFromCacheByCategory(category: String): LiveData<T> {
+    inline fun <reified T> getDataFromCacheByCategory(category: String): LiveData<T> {
         val liveData: MutableLiveData<T> = MutableLiveData()
         CoroutineScope(Dispatchers.IO).launch {
             val dataDao = database.dataDao()
-            val data = dataDao.getSeriesDataByCategory(category)
+            val data: T? = when {
+                T::class == LocalSeriesData::class -> dataDao.getSeriesDataByCategory(category) as? T
+                T::class == LocalMoviesData::class -> dataDao.getMoviesDataByCategory(category) as? T
+                else -> null
+            }
             if (checkExpirationTime(data))
                 liveData.postValue(data as T)
             else
@@ -41,7 +45,7 @@ class RoomConnection(context: Context) {
         return liveData
     }
 
-    private fun checkExpirationTime(data: Any?): Boolean {
+    fun checkExpirationTime(data: Any?): Boolean {
         if (data == null)
             return false
         val currentTimeInMillis = System.currentTimeMillis()

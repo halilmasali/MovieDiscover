@@ -27,54 +27,13 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "Response null", Toast.LENGTH_LONG).show()
             }
         }
+        dataRepository.getSeriesTopRated()
+        dataRepository.getSeriesPopular()
+        dataRepository.getSeriesOnTheAir()
 
-//        //region Movies observers
-//        apiConnection.getMovieNowPlayingList().observe(this) { nowPlayingList ->
-//            if (nowPlayingList != null) {
-//                Toast.makeText(this, "Total page ${nowPlayingList.totalPages}", Toast.LENGTH_LONG)
-//                    .show()
-//            } else {
-//                Toast.makeText(this, "Response null", Toast.LENGTH_LONG).show()
-//            }
-//        }
-//
-//        apiConnection.getMoviePopularList().observe(this) { popularList ->
-//            if (popularList != null) {
-//                Toast.makeText(
-//                    this,
-//                    "The most popular ${popularList.results[0].title}",
-//                    Toast.LENGTH_LONG
-//                ).show()
-//            } else {
-//                Toast.makeText(this, "Response null", Toast.LENGTH_LONG).show()
-//            }
-//        }
-//
-//        apiConnection.getMovieTopRatedList().observe(this) { topRatedList ->
-//            if (topRatedList != null) {
-//                Toast.makeText(
-//                    this,
-//                    "Top Rated ${topRatedList.results[0].title}",
-//                    Toast.LENGTH_LONG
-//                ).show()
-//            } else {
-//                Toast.makeText(this, "Response null", Toast.LENGTH_LONG).show()
-//            }
-//        }
-//
-//        apiConnection.getMovieUpcomingList().observe(this) { upcomingList ->
-//            if (upcomingList != null)
-//                Toast.makeText(this, "Upcoming ${upcomingList.results[0].title}", Toast.LENGTH_LONG)
-//                    .show()
-//            else
-//                Toast.makeText(this, "Response null", Toast.LENGTH_LONG).show()
-//        }
-//
-//        apiConnection.getMoviesSimilarList(25).observe(this) { similarMovies ->
-//            if (similarMovies != null)
-//                Toast.makeText(this, "Similar ${similarMovies.results[0].title}", Toast.LENGTH_LONG)
-//                    .show()
-//        }
-//        //endregion
+        dataRepository.getMovieUpcoming()
+        dataRepository.getMoviePopular()
+        dataRepository.getMovieNowPlaying()
+        dataRepository.getMovieTopRated()
     }
 }
