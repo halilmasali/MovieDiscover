@@ -18,7 +18,6 @@ import com.halilmasali.moviediscover.dataRepository.apiRepository.series.ISeries
 import com.halilmasali.moviediscover.dataRepository.apiRepository.series.ISeriesTopRatedData
 import com.halilmasali.moviediscover.dataRepository.apiRepository.series.ISimilarSeriesData
 import com.halilmasali.moviediscover.dataRepository.apiRepository.series.SeriesModelRoot
-import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -32,19 +31,24 @@ class ApiConnection: ViewModel() {
             val nowPlayingService = ApiClient.getClient(Constants.ApiBaseUrl)
                 .create(INowPlayingData::class.java)
             val nowPlayingModelRootCall = nowPlayingService.createGet(Constants.ApiKey)
-            nowPlayingModelRootCall.enqueue(object : Callback<MovieModelRoot> {
-                override fun onResponse(call: Call<MovieModelRoot>, response: Response<MovieModelRoot>) {
-                    if (response.isSuccessful) {
-                        nowPlayingLiveData.value = response.body() // Update the LiveData with the result
-                    } else {
-                        nowPlayingLiveData.value = null // Update the LiveData with null if the response is not successful
+            try {
+                nowPlayingModelRootCall.enqueue(object : Callback<MovieModelRoot> {
+                    override fun onResponse(call: Call<MovieModelRoot>, response: Response<MovieModelRoot>) {
+                        if (response.isSuccessful) {
+                            nowPlayingLiveData.value = response.body() // Update the LiveData with the result
+                        } else {
+                            nowPlayingLiveData.value = null // Update the LiveData with null if the response is not successful
+                        }
                     }
-                }
 
-                override fun onFailure(call: Call<MovieModelRoot>, t: Throwable) {
-                    nowPlayingLiveData.value = null // Update the LiveData with null in case of failure
-                }
-            })
+                    override fun onFailure(call: Call<MovieModelRoot>, t: Throwable) {
+                        nowPlayingLiveData.value = null // Update the LiveData with null in case of failure
+                        ExceptionHandler.handleFailure(t)
+                    }
+                })
+            } catch (e:Exception) {
+                ExceptionHandler.handleException(e)
+            }
         }
         return nowPlayingLiveData
     }
@@ -54,22 +58,27 @@ class ApiConnection: ViewModel() {
         viewModelScope.launch {
             val popularService = ApiClient.getClient(Constants.ApiBaseUrl).create(IPopularData::class.java)
             val popularModelRootCall = popularService.createGet(Constants.ApiKey)
-            popularModelRootCall.enqueue(object : Callback<MovieModelRoot> {
-                override fun onResponse(
-                    call: Call<MovieModelRoot>,
-                    response: Response<MovieModelRoot>
-                ) {
-                    if (response.isSuccessful) {
-                        popularLiveData.value = response.body() // Update the LiveData with the result
-                    } else {
-                        popularLiveData.value = null // Update the LiveData with null if the response is not successful
+            try {
+                popularModelRootCall.enqueue(object : Callback<MovieModelRoot> {
+                    override fun onResponse(
+                        call: Call<MovieModelRoot>,
+                        response: Response<MovieModelRoot>
+                    ) {
+                        if (response.isSuccessful) {
+                            popularLiveData.value = response.body() // Update the LiveData with the result
+                        } else {
+                            popularLiveData.value = null // Update the LiveData with null if the response is not successful
+                        }
                     }
-                }
 
-                override fun onFailure(call: Call<MovieModelRoot>, t: Throwable) {
-                    popularLiveData.value = null // Update the LiveData with null in case of failure
-                }
-            })
+                    override fun onFailure(call: Call<MovieModelRoot>, t: Throwable) {
+                        popularLiveData.value = null // Update the LiveData with null in case of failure
+                        ExceptionHandler.handleFailure(t)
+                    }
+                })
+            } catch (e:Exception) {
+                ExceptionHandler.handleException(e)
+            }
         }
         return popularLiveData
     }
@@ -79,22 +88,27 @@ class ApiConnection: ViewModel() {
         viewModelScope.launch {
             val topRatedService = ApiClient.getClient(Constants.ApiBaseUrl).create(ITopRatedData::class.java)
             val topRatedModelRootCall = topRatedService.createGet(Constants.ApiKey)
-            topRatedModelRootCall.enqueue(object : Callback<MovieModelRoot> {
-                override fun onResponse(
-                    call: Call<MovieModelRoot>,
-                    response: Response<MovieModelRoot>
-                ) {
-                    if (response.isSuccessful) {
-                        topRatedLiveData.value = response.body() // Update the LiveData with the result
-                    } else {
-                        topRatedLiveData.value = null // Update the LiveData with null if the response is not successful
+            try {
+                topRatedModelRootCall.enqueue(object : Callback<MovieModelRoot> {
+                    override fun onResponse(
+                        call: Call<MovieModelRoot>,
+                        response: Response<MovieModelRoot>
+                    ) {
+                        if (response.isSuccessful) {
+                            topRatedLiveData.value = response.body() // Update the LiveData with the result
+                        } else {
+                            topRatedLiveData.value = null // Update the LiveData with null if the response is not successful
+                        }
                     }
-                }
 
-                override fun onFailure(call: Call<MovieModelRoot>, t: Throwable) {
-                    topRatedLiveData.value = null // Update the LiveData with null in case of failure
-                }
-            })
+                    override fun onFailure(call: Call<MovieModelRoot>, t: Throwable) {
+                        topRatedLiveData.value = null // Update the LiveData with null in case of failure
+                        ExceptionHandler.handleFailure(t)
+                    }
+                })
+            } catch (e:Exception) {
+                ExceptionHandler.handleException(e)
+            }
         }
         return topRatedLiveData
     }
@@ -104,22 +118,27 @@ class ApiConnection: ViewModel() {
         viewModelScope.launch {
             val upcomingService = ApiClient.getClient(Constants.ApiBaseUrl).create(IUpcomingData::class.java)
             val upcomingModelRootCall = upcomingService.createGet(Constants.ApiKey)
-            upcomingModelRootCall.enqueue(object : Callback<MovieModelRoot> {
-                override fun onResponse(
-                    call: Call<MovieModelRoot>,
-                    response: Response<MovieModelRoot>
-                ) {
-                    if (response.isSuccessful) {
-                        upcomingLiveData.value = response.body() // Update the LiveData with the result
-                    } else {
-                        upcomingLiveData.value = null // Update the LiveData with null if the response is not successful
+            try {
+                upcomingModelRootCall.enqueue(object : Callback<MovieModelRoot> {
+                    override fun onResponse(
+                        call: Call<MovieModelRoot>,
+                        response: Response<MovieModelRoot>
+                    ) {
+                        if (response.isSuccessful) {
+                            upcomingLiveData.value = response.body() // Update the LiveData with the result
+                        } else {
+                            upcomingLiveData.value = null // Update the LiveData with null if the response is not successful
+                        }
                     }
-                }
 
-                override fun onFailure(call: Call<MovieModelRoot>, t: Throwable) {
-                    upcomingLiveData.value = null // Update the LiveData with null in case of failure
-                }
-            })
+                    override fun onFailure(call: Call<MovieModelRoot>, t: Throwable) {
+                        upcomingLiveData.value = null // Update the LiveData with null in case of failure
+                        ExceptionHandler.handleFailure(t)
+                    }
+                })
+            } catch (e:Exception) {
+                ExceptionHandler.handleException(e)
+            }
         }
         return upcomingLiveData
     }
@@ -130,23 +149,27 @@ class ApiConnection: ViewModel() {
             val similarMoviesService = ApiClient.getClient(Constants.ApiBaseUrl)
                 .create(ISimilarMoviesData::class.java)
             val similarMoviesModelRootCall = similarMoviesService.createGet(Constants.ApiKey,movieId)
-            similarMoviesModelRootCall.enqueue(object : Callback<MovieModelRoot> {
-                override fun onResponse(
-                    call: Call<MovieModelRoot>,
-                    response: Response<MovieModelRoot>
-                ) {
-                    if (response.isSuccessful){
-                        similarMoviesLiveData.value = response.body()// Update the LiveData with the result
-                    } else {
-                        similarMoviesLiveData.value = null // Update the LiveData with null if the response is not successful
+            try {
+                similarMoviesModelRootCall.enqueue(object : Callback<MovieModelRoot> {
+                    override fun onResponse(
+                        call: Call<MovieModelRoot>,
+                        response: Response<MovieModelRoot>
+                    ) {
+                        if (response.isSuccessful){
+                            similarMoviesLiveData.value = response.body()// Update the LiveData with the result
+                        } else {
+                            similarMoviesLiveData.value = null // Update the LiveData with null if the response is not successful
+                        }
                     }
-                }
 
-                override fun onFailure(call: Call<MovieModelRoot>, t: Throwable) {
-                    similarMoviesLiveData.value = null // Update the LiveData with null in case of failure
-                }
-
-            })
+                    override fun onFailure(call: Call<MovieModelRoot>, t: Throwable) {
+                        similarMoviesLiveData.value = null // Update the LiveData with null in case of failure
+                        ExceptionHandler.handleFailure(t)
+                    }
+                })
+            } catch (e:Exception) {
+                ExceptionHandler.handleException(e)
+            }
         }
         return similarMoviesLiveData
     }
@@ -159,22 +182,27 @@ class ApiConnection: ViewModel() {
             val airingTodayService = ApiClient.getClient(Constants.ApiBaseUrl)
                 .create(IAiringTodayData::class.java)
             val airingTodayModelRootCall = airingTodayService.createGet(Constants.ApiKey)
-            airingTodayModelRootCall.enqueue(object : Callback<SeriesModelRoot> {
-                override fun onResponse(
-                    call: Call<SeriesModelRoot>,
-                    response: Response<SeriesModelRoot>
-                ) {
-                    if (response.isSuccessful) {
-                        airingTodayLiveData.value = response.body() // Update the LiveData with the result
-                    } else {
-                        airingTodayLiveData.value = null // Update the LiveData with null if the response is not successful
+            try {
+                airingTodayModelRootCall.enqueue(object : Callback<SeriesModelRoot> {
+                    override fun onResponse(
+                        call: Call<SeriesModelRoot>,
+                        response: Response<SeriesModelRoot>
+                    ) {
+                        if (response.isSuccessful) {
+                            airingTodayLiveData.value = response.body() // Update the LiveData with the result
+                        } else {
+                            airingTodayLiveData.value = null // Update the LiveData with null if the response is not successful
+                        }
                     }
-                }
 
-                override fun onFailure(call: Call<SeriesModelRoot>, t: Throwable) {
-                    airingTodayLiveData.value = null // Update the LiveData with null in case of failure
-                }
-            })
+                    override fun onFailure(call: Call<SeriesModelRoot>, t: Throwable) {
+                        airingTodayLiveData.value = null // Update the LiveData with null in case of failure
+                        ExceptionHandler.handleFailure(t)
+                    }
+                })
+            } catch (e:Exception) {
+                ExceptionHandler.handleException(e)
+            }
         }
         return airingTodayLiveData
     }
@@ -184,22 +212,27 @@ class ApiConnection: ViewModel() {
         viewModelScope.launch {
             val onTheAirService = ApiClient.getClient(Constants.ApiBaseUrl).create(IOnTheAirData::class.java)
             val onTheAirModelRootCall = onTheAirService.createGet(Constants.ApiKey)
-            onTheAirModelRootCall.enqueue(object : Callback<SeriesModelRoot> {
-                override fun onResponse(
-                    call: Call<SeriesModelRoot>,
-                    response: Response<SeriesModelRoot>
-                ) {
-                    if (response.isSuccessful) {
-                        onTheAirLiveData.value = response.body() // Update the LiveData with the result
-                    } else {
-                        onTheAirLiveData.value = null // Update the LiveData with null if the response is not successful
+            try {
+                onTheAirModelRootCall.enqueue(object : Callback<SeriesModelRoot> {
+                    override fun onResponse(
+                        call: Call<SeriesModelRoot>,
+                        response: Response<SeriesModelRoot>
+                    ) {
+                        if (response.isSuccessful) {
+                            onTheAirLiveData.value = response.body() // Update the LiveData with the result
+                        } else {
+                            onTheAirLiveData.value = null // Update the LiveData with null if the response is not successful
+                        }
                     }
-                }
 
-                override fun onFailure(call: Call<SeriesModelRoot>, t: Throwable) {
-                    onTheAirLiveData.value = null // Update the LiveData with null in case of failure
-                }
-            })
+                    override fun onFailure(call: Call<SeriesModelRoot>, t: Throwable) {
+                        onTheAirLiveData.value = null // Update the LiveData with null in case of failure
+                        ExceptionHandler.handleFailure(t)
+                    }
+                })
+            } catch (e:Exception) {
+                ExceptionHandler.handleException(e)
+            }
         }
         return onTheAirLiveData
     }
@@ -210,22 +243,27 @@ class ApiConnection: ViewModel() {
             val popularService = ApiClient.getClient(Constants.ApiBaseUrl)
                 .create(ISeriesPopularData::class.java)
             val popularModelRootCall = popularService.createGet(Constants.ApiKey)
-            popularModelRootCall.enqueue(object : Callback<SeriesModelRoot> {
-                override fun onResponse(
-                    call: Call<SeriesModelRoot>,
-                    response: Response<SeriesModelRoot>
-                ) {
-                    if (response.isSuccessful) {
-                        popularLiveData.value = response.body() // Update the LiveData with the result
-                    } else {
-                        popularLiveData.value = null // Update the LiveData with null if the response is not successful
+            try {
+                popularModelRootCall.enqueue(object : Callback<SeriesModelRoot> {
+                    override fun onResponse(
+                        call: Call<SeriesModelRoot>,
+                        response: Response<SeriesModelRoot>
+                    ) {
+                        if (response.isSuccessful) {
+                            popularLiveData.value = response.body() // Update the LiveData with the result
+                        } else {
+                            popularLiveData.value = null // Update the LiveData with null if the response is not successful
+                        }
                     }
-                }
 
-                override fun onFailure(call: Call<SeriesModelRoot>, t: Throwable) {
-                    popularLiveData.value = null // Update the LiveData with null in case of failure
-                }
-            })
+                    override fun onFailure(call: Call<SeriesModelRoot>, t: Throwable) {
+                        popularLiveData.value = null // Update the LiveData with null in case of failure
+                        ExceptionHandler.handleFailure(t)
+                    }
+                })
+            } catch (e:Exception) {
+                ExceptionHandler.handleException(e)
+            }
         }
         return popularLiveData
     }
@@ -236,22 +274,27 @@ class ApiConnection: ViewModel() {
             val topRatedService = ApiClient.getClient(Constants.ApiBaseUrl)
                 .create(ISeriesTopRatedData::class.java)
             val topRatedModelRootCall = topRatedService.createGet(Constants.ApiKey)
-            topRatedModelRootCall.enqueue(object : Callback<SeriesModelRoot> {
-                override fun onResponse(
-                    call: Call<SeriesModelRoot>,
-                    response: Response<SeriesModelRoot>
-                ) {
-                    if (response.isSuccessful) {
-                        topRatedLiveData.value = response.body() // Update the LiveData with the result
-                    } else {
-                        topRatedLiveData.value = null // Update the LiveData with null if the response is not successful
+            try {
+                topRatedModelRootCall.enqueue(object : Callback<SeriesModelRoot> {
+                    override fun onResponse(
+                        call: Call<SeriesModelRoot>,
+                        response: Response<SeriesModelRoot>
+                    ) {
+                        if (response.isSuccessful) {
+                            topRatedLiveData.value = response.body() // Update the LiveData with the result
+                        } else {
+                            topRatedLiveData.value = null // Update the LiveData with null if the response is not successful
+                        }
                     }
-                }
 
-                override fun onFailure(call: Call<SeriesModelRoot>, t: Throwable) {
-                    topRatedLiveData.value = null // Update the LiveData with null in case of failure
-                }
-            })
+                    override fun onFailure(call: Call<SeriesModelRoot>, t: Throwable) {
+                        topRatedLiveData.value = null // Update the LiveData with null in case of failure
+                        ExceptionHandler.handleFailure(t)
+                    }
+                })
+            } catch (e:Exception) {
+                ExceptionHandler.handleException(e)
+            }
         }
         return topRatedLiveData
     }
@@ -262,41 +305,29 @@ class ApiConnection: ViewModel() {
             val similarSeriesService = ApiClient.getClient(Constants.ApiBaseUrl)
                 .create(ISimilarSeriesData::class.java)
             val similarSeriesModelRootCall = similarSeriesService.createGet(Constants.ApiKey,seriesId)
-            similarSeriesModelRootCall.enqueue(object : Callback<SeriesModelRoot> {
-                override fun onResponse(
-                    call: Call<SeriesModelRoot>,
-                    response: Response<SeriesModelRoot>
-                ) {
-                    if (response.isSuccessful){
-                        similarSeriesLiveData.value = response.body()// Update the LiveData with the result
-                    } else {
-                        similarSeriesLiveData.value = null // Update the LiveData with null if the response is not successful
+            try {
+                similarSeriesModelRootCall.enqueue(object : Callback<SeriesModelRoot> {
+                    override fun onResponse(
+                        call: Call<SeriesModelRoot>,
+                        response: Response<SeriesModelRoot>
+                    ) {
+                        if (response.isSuccessful){
+                            similarSeriesLiveData.value = response.body()// Update the LiveData with the result
+                        } else {
+                            similarSeriesLiveData.value = null // Update the LiveData with null if the response is not successful
+                        }
                     }
-                }
 
-                override fun onFailure(call: Call<SeriesModelRoot>, t: Throwable) {
-                    similarSeriesLiveData.value = null // Update the LiveData with null in case of failure
-                }
-
-            })
+                    override fun onFailure(call: Call<SeriesModelRoot>, t: Throwable) {
+                        similarSeriesLiveData.value = null // Update the LiveData with null in case of failure
+                        ExceptionHandler.handleFailure(t)
+                    }
+                })
+            }catch (e:Exception) {
+                ExceptionHandler.handleException(e)
+            }
         }
         return similarSeriesLiveData
     }
     //endregion
-
-    fun getImages(imageUrl:String) {
-        val imageService = ApiClient.getClient(Constants.ImageBaseUrl).create(IGetImageData::class.java)
-        val imageRootCall = imageService.createGet("w200",imageUrl)
-        imageRootCall.enqueue(object : Callback<ResponseBody> {
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if (response.isSuccessful){
-                    println(response.body()?.byteStream())
-                }
-            }
-
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                TODO("Not yet implemented")
-            }
-        })
-    }
 }
