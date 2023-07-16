@@ -1,38 +1,42 @@
 package com.halilmasali.moviediscover.dataRepository.apiRepository
 
-import android.util.Log
-import org.json.JSONException
-import java.io.IOException
+import okhttp3.ResponseBody
+import org.json.JSONObject
 import java.lang.Exception
+import java.net.UnknownHostException
 
 class ExceptionHandler {
     companion object {
-        fun handleException(exception: Exception) {
-            when (exception) {
-                is IOException -> {
-                    //File execute problem
-                    Log.e("ExceptionHandler", "IOException occurred: ${exception.message}")
+        fun handleError(error: Any?): String {
+            if (error == null)
+                return ""
+            return when (error) {
+                is Exception -> {
+                    if (error is UnknownHostException){
+                        return "Please check your Internet connection."
+                    } else
+                        error.message ?: "Error"
                 }
-                is JSONException -> {
-                    // JSON error
-                    Log.e("ExceptionHandler", "JSONException occurred: ${exception.message}")
+
+                is Throwable -> {
+                    error.message ?: "Error"
                 }
-                else -> {
-                    // Other unexpected errors
-                    Log.e("ExceptionHandler", "Exception occurred: ${exception.message}")
+
+                is ResponseBody -> {
+                    parseErrorMessage(error)
                 }
+
+                else -> "Error"
             }
         }
-        fun handleFailure(throwable: Throwable){
-            when (throwable) {
-                is IOException ->{
-                    // Network error
-                    Log.e("ExceptionHandler", "IOException occurred: ${throwable.message}")
-                }
-                else -> {
-                    // Other unexpected errors
-                    Log.e("ExceptionHandler", "Exception occurred: ${throwable.message}")
-                }
+
+        private fun parseErrorMessage(responseBody: ResponseBody?): String {
+            return try {
+                val errorJson = responseBody?.string()
+                val jsonObject = JSONObject(errorJson!!)
+                jsonObject.optString("status_message", "Error")
+            } catch (e: Exception) {
+                "Error parsing response body"
             }
         }
     }
