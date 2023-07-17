@@ -16,121 +16,134 @@ class DataRepository(private val lifecycleOwner: LifecycleOwner, context: Contex
     private val api = ApiConnection()
     private val room = RoomConnection(context)
 
-    //region Series Func
-    fun getSeriesAiringToday(): LiveData<ArrayList<SeriesModelResults>> {
-        val airingTodayLiveData: MutableLiveData<ArrayList<SeriesModelResults>> = MutableLiveData()
+    // region Series Func
+    fun getSeriesAiringToday(): LiveData<DataResult<ArrayList<SeriesModelResults>>> {
+        val airingTodayLiveData: MutableLiveData<DataResult<ArrayList<SeriesModelResults>>> =
+            MutableLiveData()
         // Used if cache data exists and has not expired.
         room.getDataFromCacheByCategory<LocalSeriesData>("SeriesAiringToday")
             .observe(lifecycleOwner) { cacheData ->
                 if (cacheData != null) {
-                    airingTodayLiveData.value = cacheData.data
+                    airingTodayLiveData.value = DataResult(cacheData.data, null)
                     println("Cache value")
                 } else {
                     //If the cache data has expired or null,
                     // data is taken from the api and saves it for the cache.
                     api.getSeriesAiringTodayList()
                         .observe(lifecycleOwner) { airingTodayList ->
-                            if (airingTodayList != null) {
+                            if (airingTodayList.data?.results != null) {
                                 val data = LocalSeriesData(
                                     1,
                                     "SeriesAiringToday",
                                     Constants.ExpirationTime + System.currentTimeMillis(),
-                                    airingTodayList.results
+                                    airingTodayList.data?.results
                                 )
                                 room.insertDataToCache(data)
-                                airingTodayLiveData.value = airingTodayList.results
-                            } else
+                                airingTodayLiveData.value =
+                                    DataResult(airingTodayList.data!!.results, null)
+                            } else {
+                                airingTodayLiveData.value = DataResult(null, airingTodayList.error)
                                 println("Response null")
+                            }
                         }
                 }
             }
         return airingTodayLiveData
     }
 
-    fun getSeriesOnTheAir(): LiveData<ArrayList<SeriesModelResults>> {
-        val onTheAirLiveData: MutableLiveData<ArrayList<SeriesModelResults>> = MutableLiveData()
+    fun getSeriesOnTheAir(): LiveData<DataResult<ArrayList<SeriesModelResults>>> {
+        val onTheAirLiveData: MutableLiveData<DataResult<ArrayList<SeriesModelResults>>> =
+            MutableLiveData()
         // Used if cache data exists and has not expired.
         room.getDataFromCacheByCategory<LocalSeriesData>("SeriesOnTheAir")
             .observe(lifecycleOwner) { cacheData ->
                 if (cacheData != null) {
-                    onTheAirLiveData.value = cacheData.data
+                    onTheAirLiveData.value = DataResult(cacheData.data, null)
                     println("Cache value")
                 } else {
                     //If the cache data has expired or null,
                     // data is taken from the api and saves it for the cache.
                     api.getSeriesOnTheAirList()
                         .observe(lifecycleOwner) { onTheAir ->
-                            if (onTheAir != null) {
+                            if (onTheAir.data?.results != null) {
                                 val data = LocalSeriesData(
                                     2,
                                     "SeriesOnTheAir",
                                     Constants.ExpirationTime + System.currentTimeMillis(),
-                                    onTheAir.results
+                                    onTheAir.data?.results
                                 )
                                 room.insertDataToCache(data)
-                                onTheAirLiveData.value = onTheAir.results
-                            } else
+                                onTheAirLiveData.value = DataResult(onTheAir.data!!.results, null)
+                            } else {
+                                onTheAirLiveData.value = DataResult(null, onTheAir.error)
                                 println("Response null")
+                            }
                         }
                 }
             }
         return onTheAirLiveData
     }
 
-    fun getSeriesPopular(): LiveData<ArrayList<SeriesModelResults>> {
-        val popularLiveData: MutableLiveData<ArrayList<SeriesModelResults>> = MutableLiveData()
+    fun getSeriesPopular(): LiveData<DataResult<ArrayList<SeriesModelResults>>> {
+        val popularLiveData: MutableLiveData<DataResult<ArrayList<SeriesModelResults>>> =
+            MutableLiveData()
         // Used if cache data exists and has not expired.
         room.getDataFromCacheByCategory<LocalSeriesData>("SeriesPopular")
             .observe(lifecycleOwner) { cacheData ->
                 if (cacheData != null) {
-                    popularLiveData.value = cacheData.data
+                    popularLiveData.value = DataResult(cacheData.data, null)
                     println("Cache value")
                 } else {
                     //If the cache data has expired or null,
                     // data is taken from the api and saves it for the cache.
                     api.getSeriesPopularList()
                         .observe(lifecycleOwner) { popular ->
-                            if (popular != null) {
+                            if (popular.data?.results != null) {
                                 val data = LocalSeriesData(
                                     3,
                                     "SeriesPopular",
                                     Constants.ExpirationTime + System.currentTimeMillis(),
-                                    popular.results
+                                    popular.data?.results
                                 )
                                 room.insertDataToCache(data)
-                                popularLiveData.value = popular.results
-                            } else
+                                popularLiveData.value = DataResult(popular.data!!.results, null)
+                            } else {
+                                popularLiveData.value = DataResult(null, popular.error)
                                 println("Response null")
+                            }
                         }
                 }
             }
         return popularLiveData
     }
 
-    fun getSeriesTopRated(): LiveData<ArrayList<SeriesModelResults>> {
-        val topRatedLiveData: MutableLiveData<ArrayList<SeriesModelResults>> = MutableLiveData()
+    fun getSeriesTopRated(): LiveData<DataResult<ArrayList<SeriesModelResults>>> {
+        val topRatedLiveData: MutableLiveData<DataResult<ArrayList<SeriesModelResults>>> =
+            MutableLiveData()
         // Used if cache data exists and has not expired.
         room.getDataFromCacheByCategory<LocalSeriesData>("SeriesTopRated")
             .observe(lifecycleOwner) { cacheData ->
                 if (cacheData != null) {
-                    topRatedLiveData.value = cacheData.data
+                    topRatedLiveData.value = DataResult(cacheData.data, null)
                     println("Cache value")
                 } else {
                     //If the cache data has expired or null,
                     // data is taken from the api and saves it for the cache.
                     api.getSeriesTopRatedList()
                         .observe(lifecycleOwner) { topRated ->
-                            if (topRated != null) {
+                            if (topRated.data?.results != null) {
                                 val data = LocalSeriesData(
                                     4,
                                     "SeriesTopRated",
                                     Constants.ExpirationTime + System.currentTimeMillis(),
-                                    topRated.results
+                                    topRated.data?.results
                                 )
                                 room.insertDataToCache(data)
-                                topRatedLiveData.value = topRated.results
-                            } else
+                                topRatedLiveData.value = DataResult(topRated.data!!.results, null)
+                            } else {
+                                topRatedLiveData.value = DataResult(null, topRated.error)
                                 println("Response null")
+                            }
                         }
                 }
             }
@@ -141,12 +154,12 @@ class DataRepository(private val lifecycleOwner: LifecycleOwner, context: Contex
     fun getSeriesSimilar(seriesId: String) {
         api.getSeriesSimilarList(seriesId).observe(lifecycleOwner) { similar ->
             if (similar != null) {
-                println("Series Similar: ${similar.results[0].name}")
+                println("Series Similar: ${similar.data?.results?.get(0)?.name}")
                 val data = LocalSeriesData(
                     5,
                     "SeriesSimilar",
                     Constants.ExpirationTime,
-                    similar.results
+                    similar.data?.results
                 )
                 room.insertDataToCache(data)
             } else
@@ -156,120 +169,128 @@ class DataRepository(private val lifecycleOwner: LifecycleOwner, context: Contex
     // endregion
 
     // region Movies Func
-    fun getMovieNowPlaying(): LiveData<ArrayList<MovieModelResults>> {
-        val liveData: MutableLiveData<ArrayList<MovieModelResults>> = MutableLiveData()
+    fun getMovieNowPlaying(): LiveData<DataResult<ArrayList<MovieModelResults>>> {
+        val liveData: MutableLiveData<DataResult<ArrayList<MovieModelResults>>> = MutableLiveData()
         // Used if cache data exists and has not expired.
         room.getDataFromCacheByCategory<LocalMoviesData>("MovieNowPlaying")
             .observe(lifecycleOwner) { cacheData ->
                 if (cacheData != null) {
-                    liveData.value = cacheData.data
+                    liveData.value = DataResult(cacheData.data, null)
                     println("Cache value")
                 } else {
                     //If the cache data has expired or null,
                     // data is taken from the api and saves it for the cache.
                     api.getMovieNowPlayingList()
                         .observe(lifecycleOwner) { item ->
-                            if (item != null) {
+                            if (item.data?.results != null) {
                                 val data = LocalMoviesData(
                                     1,
                                     "MovieNowPlaying",
                                     Constants.ExpirationTime + System.currentTimeMillis(),
-                                    item.results
+                                    item.data?.results
                                 )
                                 room.insertDataToCache(data)
-                                liveData.value = item.results
-                            } else
+                                liveData.value = DataResult(item.data!!.results, null)
+                            } else {
+                                liveData.value = DataResult(null, item.error)
                                 println("Response null")
+                            }
                         }
                 }
             }
         return liveData
     }
 
-    fun getMoviePopular(): LiveData<ArrayList<MovieModelResults>> {
-        val liveData: MutableLiveData<ArrayList<MovieModelResults>> = MutableLiveData()
+    fun getMoviePopular(): LiveData<DataResult<ArrayList<MovieModelResults>>> {
+        val liveData: MutableLiveData<DataResult<ArrayList<MovieModelResults>>> = MutableLiveData()
         // Used if cache data exists and has not expired.
         room.getDataFromCacheByCategory<LocalMoviesData>("MoviePopular")
             .observe(lifecycleOwner) { cacheData ->
                 if (cacheData != null) {
-                    liveData.value = cacheData.data
+                    liveData.value = DataResult(cacheData.data, null)
                     println("Cache value")
                 } else {
                     //If the cache data has expired or null,
                     // data is taken from the api and saves it for the cache.
                     api.getMoviePopularList()
                         .observe(lifecycleOwner) { item ->
-                            if (item != null) {
+                            if (item.data?.results != null) {
                                 val data = LocalMoviesData(
                                     2,
                                     "MoviePopular",
                                     Constants.ExpirationTime + System.currentTimeMillis(),
-                                    item.results
+                                    item.data?.results
                                 )
                                 room.insertDataToCache(data)
-                                liveData.value = item.results
-                            } else
+                                liveData.value = DataResult(item.data!!.results, null)
+                            } else {
+                                liveData.value = DataResult(null, item.error)
                                 println("Response null")
+                            }
                         }
                 }
             }
         return liveData
     }
 
-    fun getMovieTopRated(): LiveData<ArrayList<MovieModelResults>> {
-        val liveData: MutableLiveData<ArrayList<MovieModelResults>> = MutableLiveData()
+    fun getMovieTopRated(): LiveData<DataResult<ArrayList<MovieModelResults>>> {
+        val liveData: MutableLiveData<DataResult<ArrayList<MovieModelResults>>> = MutableLiveData()
         // Used if cache data exists and has not expired.
         room.getDataFromCacheByCategory<LocalMoviesData>("MovieTopRated")
             .observe(lifecycleOwner) { cacheData ->
                 if (cacheData != null) {
-                    liveData.value = cacheData.data
+                    liveData.value = DataResult(cacheData.data, null)
                     println("Cache value")
                 } else {
                     //If the cache data has expired or null,
                     // data is taken from the api and saves it for the cache.
                     api.getMovieTopRatedList()
                         .observe(lifecycleOwner) { item ->
-                            if (item != null) {
+                            if (item.data?.results != null) {
                                 val data = LocalMoviesData(
                                     3,
                                     "MovieTopRated",
                                     Constants.ExpirationTime + System.currentTimeMillis(),
-                                    item.results
+                                    item.data?.results
                                 )
                                 room.insertDataToCache(data)
-                                liveData.value = item.results
-                            } else
+                                liveData.value = DataResult(item.data!!.results, null)
+                            } else {
+                                liveData.value = DataResult(null, item.error)
                                 println("Response null")
+                            }
                         }
                 }
             }
         return liveData
     }
 
-    fun getMovieUpcoming(): LiveData<ArrayList<MovieModelResults>> {
-        val liveData: MutableLiveData<ArrayList<MovieModelResults>> = MutableLiveData()
+    fun getMovieUpcoming(): LiveData<DataResult<ArrayList<MovieModelResults>>> {
+        val liveData: MutableLiveData<DataResult<ArrayList<MovieModelResults>>> = MutableLiveData()
         // Used if cache data exists and has not expired.
         room.getDataFromCacheByCategory<LocalMoviesData>("MovieUpcoming")
             .observe(lifecycleOwner) { cacheData ->
                 if (cacheData != null) {
-                    liveData.value = cacheData.data
+                    liveData.value = DataResult(cacheData.data, null)
                     println("Cache value")
                 } else {
                     //If the cache data has expired or null,
                     // data is taken from the api and saves it for the cache.
                     api.getMovieUpcomingList()
                         .observe(lifecycleOwner) { item ->
-                            if (item != null) {
+                            if (item.data?.results != null) {
                                 val data = LocalMoviesData(
                                     4,
                                     "MovieUpcoming",
                                     Constants.ExpirationTime + System.currentTimeMillis(),
-                                    item.results
+                                    item.data?.results
                                 )
                                 room.insertDataToCache(data)
-                                liveData.value = item.results
-                            } else
+                                liveData.value = DataResult(item.data!!.results, null)
+                            } else {
+                                liveData.value = DataResult(null, item.error)
                                 println("Response null")
+                            }
                         }
                 }
             }

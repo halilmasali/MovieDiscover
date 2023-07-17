@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.halilmasali.moviediscover.dataRepository.DataRepository
+import com.halilmasali.moviediscover.dataRepository.apiRepository.ExceptionHandler
 
 
 class MainActivity : AppCompatActivity() {
@@ -20,11 +21,11 @@ class MainActivity : AppCompatActivity() {
         // TODO for data repo test
         val dataRepository = DataRepository(this,this)
         dataRepository.getSeriesAiringToday().observe(this) {airingToday ->
-            if (airingToday != null) {
-                Toast.makeText(this, "Airing Today ${airingToday[0].name}", Toast.LENGTH_LONG)
+            if (airingToday.data != null) {
+                Toast.makeText(this, "Airing Today ${airingToday.data!![0].name}", Toast.LENGTH_LONG)
                     .show()
             } else {
-                Toast.makeText(this, "Response null", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Response null: ${ExceptionHandler.handleError(airingToday.error)}", Toast.LENGTH_LONG).show()
             }
         }
         dataRepository.getSeriesTopRated()
