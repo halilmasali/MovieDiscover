@@ -33,7 +33,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewCustom"
+        android:id="@+id/recyclerViewInner"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_marginStart="16dp"
@@ -54,9 +54,9 @@
         android:layout_height="wrap_content"
         tools:text="Error"
         android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="@+id/recyclerViewCustom"
-        app:layout_constraintEnd_toEndOf="@+id/recyclerViewCustom"
-        app:layout_constraintStart_toStartOf="@+id/recyclerViewCustom"
-        app:layout_constraintTop_toTopOf="@+id/recyclerViewCustom" />
+        app:layout_constraintBottom_toBottomOf="@+id/recyclerViewInner"
+        app:layout_constraintEnd_toEndOf="@+id/recyclerViewInner"
+        app:layout_constraintStart_toStartOf="@+id/recyclerViewInner"
+        app:layout_constraintTop_toTopOf="@+id/recyclerViewInner" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

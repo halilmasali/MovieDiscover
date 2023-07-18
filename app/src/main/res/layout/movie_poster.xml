@@ -12,10 +12,11 @@
 
             <!-- Media -->
             <ImageView
+                android:id="@+id/imageCard"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:srcCompat="@drawable/ic_refresh"
-                android:scaleType="fitCenter"
-                />
+                android:scaleType="centerCrop"
+                android:contentDescription="@string/poster_content_desc" />
     </com.google.android.material.card.MaterialCardView>
 </FrameLayout>
