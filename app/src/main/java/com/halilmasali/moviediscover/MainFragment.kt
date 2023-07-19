@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.halilmasali.moviediscover.dataRepository.DataRepository
 import com.halilmasali.moviediscover.databinding.FragmentMainBinding
@@ -19,6 +21,8 @@ class MainFragment : Fragment() {
     private lateinit var data: ArrayList<ItemsViewModel>
     private lateinit var dataRepository: DataRepository
 
+    private val sharedViewModel: SharedViewModel<Any> by activityViewModels()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -32,6 +36,15 @@ class MainFragment : Fragment() {
         adapter = CustomItemAdapter(data)
         binding.recyclerViewContent.adapter = adapter
 
+        adapter?.setOnItemClickListener(object : CustomItemAdapter.OnItemClickListener {
+            override fun onItemClick(data: Any) {
+                sharedViewModel.saveDetailData(data)
+                findNavController().navigate(R.id.action_mainFragment_to_detailsFragment)
+            }
+        })
+
+        // First load movie data
+        getAllMoviesData()
         binding.toggleButton.check(binding.button1.id)
         binding.toggleButton.isSelectionRequired = true
         binding.toggleButton.addOnButtonCheckedListener { group, checkedId, isChecked ->

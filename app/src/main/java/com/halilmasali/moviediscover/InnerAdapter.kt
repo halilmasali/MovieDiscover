@@ -35,16 +35,23 @@ class InnerAdapter(private val items: List<Any>) : RecyclerView.Adapter<InnerAda
                     Constants.ImageBaseUrl + item.posterPath)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(holder.imageCard)
-                // TODO card click listen
-                holder.card.setOnClickListener {  }
+                holder.card.setOnClickListener { onItemClickListener?.onItemClick(item) }
             }
             is MovieModelResults ->{
                 Glide.with(holder.context).load(
                     Constants.ImageBaseUrl + item.posterPath)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(holder.imageCard)
-                holder.card.setOnClickListener {  }
+                holder.card.setOnClickListener { onItemClickListener?.onItemClick(item) }
             }
         }
+    }
+    interface OnItemClickListener {
+        fun onItemClick(data: Any)
+    }
+    private var onItemClickListener: OnItemClickListener? = null
+
+    fun setOnItemClickListener(listener: OnItemClickListener) {
+        onItemClickListener = listener
     }
 }

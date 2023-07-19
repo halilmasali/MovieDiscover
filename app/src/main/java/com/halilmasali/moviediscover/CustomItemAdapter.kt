@@ -53,11 +53,25 @@ class CustomItemAdapter(private var items: ArrayList<ItemsViewModel>) :
         )
         val innerAdapter = item.data?.let { InnerAdapter(it) }
         recyclerViewInner.adapter = innerAdapter
+
+        innerAdapter?.setOnItemClickListener(object : InnerAdapter.OnItemClickListener {
+            override fun onItemClick(data: Any) {
+                onItemClickListener?.onItemClick(data)
+            }
+        })
     }
 
     fun addList(addList: ArrayList<ItemsViewModel>) {
         items = addList
         notifyDataSetChanged()
+    }
+    interface OnItemClickListener {
+        fun onItemClick(data: Any)
+    }
+    private var onItemClickListener: OnItemClickListener? = null
+
+    fun setOnItemClickListener(listener: OnItemClickListener) {
+        onItemClickListener = listener
     }
 }
 
