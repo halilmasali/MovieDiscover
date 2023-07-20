@@ -9,28 +9,24 @@ import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.halilmasali.moviediscover.dataRepository.apiRepository.ExceptionHandler
+import com.halilmasali.moviediscover.databinding.CustomItemBinding
 
 class CustomItemAdapter(private var items: ArrayList<ItemsViewModel>) :
     RecyclerView.Adapter<CustomItemAdapter.ViewHolder>() {
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var title: TextView
-        var error: TextView
-        var buttonRefresh: Button
-        var recyclerViewInner: RecyclerView
-        val context: Context = itemView.context
+    private lateinit var binding: CustomItemBinding
 
-        init {
-            title = itemView.findViewById(R.id.textTitle)
-            error = itemView.findViewById(R.id.textError)
-            buttonRefresh = itemView.findViewById(R.id.buttonRefresh)
-            recyclerViewInner = itemView.findViewById(R.id.recyclerViewInner)
-        }
+    inner class ViewHolder(binding: CustomItemBinding) : RecyclerView.ViewHolder(binding.root) {
+        val title: TextView = binding.textTitle
+        val error: TextView = binding.textError
+        val buttonRefresh: Button = binding.buttonRefresh
+        val recyclerViewInner: RecyclerView = binding.recyclerViewInner
+        val context: Context = binding.root.context
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.custom_item, parent, false)
-        return ViewHolder(view)
+        binding = CustomItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(binding)
     }
 
     override fun getItemCount(): Int {

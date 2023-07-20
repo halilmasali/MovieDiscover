@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.halilmasali.moviediscover.dataRepository.DataRepository
@@ -35,14 +36,24 @@ class DetailsFragment : Fragment() {
         binding.recyclerViewDetailContent.layoutManager = LinearLayoutManager(requireContext())
         dataRepository = DataRepository(this, requireContext())
         data = ArrayList()
-        data.add(ItemsViewModel())
+        for (i in 0..1){
+            data.add(ItemsViewModel())
+        }
         adapter = CustomItemAdapter(data)
         binding.recyclerViewDetailContent.adapter = adapter
+        // Calculate the total height of all items in the RecyclerView
+        val totalHeight = calculateTotalItemsHeight(binding.recyclerViewDetailContent)
+        // Set the calculated height to the RecyclerView
+        val params = binding.recyclerViewDetailContent.layoutParams
+        params.height = totalHeight
+        binding.recyclerViewDetailContent.layoutParams = params
 
         adapter?.setOnItemClickListener(object : CustomItemAdapter.OnItemClickListener {
             override fun onItemClick(data: Any) {
                 sharedViewModel.saveDetailData(data)
-                findNavController().navigate(R.id.action_detailsFragment_self)
+                findNavController().currentDestination?.getAction(R.id.action_detailsFragment_self)?.let {
+                    findNavController().popBackStack(it.destinationId, false)
+                }
             }
         })
 
@@ -81,9 +92,7 @@ class DetailsFragment : Fragment() {
                         .into(binding.imagePoster)
                 }
             }
-
         }
-
         return binding.root
     }
     // FIXME it's for test delete it
@@ -107,4 +116,19 @@ class DetailsFragment : Fragment() {
         }
     }
 
+    private fun calculateTotalItemsHeight(recyclerView: RecyclerView): Int {
+        val adapter = recyclerView.adapter
+        var totalHeight = 0
+        if (adapter != null) {
+            for (i in 0 until adapter.itemCount) {
+                val itemView = adapter.createViewHolder(recyclerView, adapter.getItemViewType(i)).itemView
+                itemView.measure(
+                    View.MeasureSpec.makeMeasureSpec(recyclerView.width, View.MeasureSpec.EXACTLY),
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+                )
+                totalHeight += itemView.measuredHeight
+            }
+        }
+        return totalHeight
+    }
 }
