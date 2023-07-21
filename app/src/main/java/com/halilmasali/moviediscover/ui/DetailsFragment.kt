@@ -1,4 +1,4 @@
-package com.halilmasali.moviediscover
+package com.halilmasali.moviediscover.ui
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -11,10 +11,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.halilmasali.moviediscover.Constants
+import com.halilmasali.moviediscover.R
 import com.halilmasali.moviediscover.dataRepository.DataRepository
 import com.halilmasali.moviediscover.dataRepository.apiRepository.movies.MovieModelResults
 import com.halilmasali.moviediscover.dataRepository.apiRepository.series.SeriesModelResults
 import com.halilmasali.moviediscover.databinding.FragmentDetailsBinding
+import com.halilmasali.moviediscover.ui.adapters.CustomItemAdapter
+import com.halilmasali.moviediscover.viewModels.ItemsViewModel
+import com.halilmasali.moviediscover.viewModels.SharedViewModel
 
 class DetailsFragment : Fragment() {
 

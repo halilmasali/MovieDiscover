@@ -1,6 +1,8 @@
-package com.halilmasali.moviediscover
+package com.halilmasali.moviediscover.ui
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,8 +10,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.facebook.shimmer.ShimmerFrameLayout
+import com.halilmasali.moviediscover.R
 import com.halilmasali.moviediscover.dataRepository.DataRepository
 import com.halilmasali.moviediscover.databinding.FragmentMainBinding
+import com.halilmasali.moviediscover.ui.adapters.CustomItemAdapter
+import com.halilmasali.moviediscover.viewModels.ItemsViewModel
+import com.halilmasali.moviediscover.viewModels.SharedViewModel
 
 class MainFragment : Fragment() {
 
@@ -20,7 +27,7 @@ class MainFragment : Fragment() {
     private var adapter: CustomItemAdapter? = null
     private lateinit var data: ArrayList<ItemsViewModel>
     private lateinit var dataRepository: DataRepository
-
+    private lateinit var shimmer: ShimmerFrameLayout
     private val sharedViewModel: SharedViewModel<Any> by activityViewModels()
 
     override fun onCreateView(
@@ -32,21 +39,21 @@ class MainFragment : Fragment() {
         binding.recyclerViewContent.layoutManager = LinearLayoutManager(requireContext())
         dataRepository = DataRepository(this, requireContext())
         data = ArrayList()
-        data.add(ItemsViewModel())
+        for (i in 0..3){
+            data.add(ItemsViewModel())
+        }
         adapter = CustomItemAdapter(data)
         binding.recyclerViewContent.adapter = adapter
-
+        // Shimmer effect for loading
+        shimmer = binding.shimmerLayout
         adapter?.setOnItemClickListener(object : CustomItemAdapter.OnItemClickListener {
             override fun onItemClick(data: Any) {
                 sharedViewModel.saveDetailData(data)
                 findNavController().navigate(R.id.action_mainFragment_to_detailsFragment)
             }
         })
-
-        // First load movie data
-        getAllMoviesData()
+        getAllMoviesData() // First load movie data
         binding.toggleButton.check(binding.button1.id)
-        binding.toggleButton.isSelectionRequired = true
         binding.toggleButton.addOnButtonCheckedListener { group, checkedId, isChecked ->
             if (isChecked){
                 when(checkedId){
@@ -59,47 +66,76 @@ class MainFragment : Fragment() {
                 }
             }
         }
-
         return binding.root
     }
 
     private fun getAllSeriesData() {
+        var count = 0
         data.clear()
+        shimmer.startShimmer()
+        binding.recyclerViewContent.visibility = View.GONE
+        shimmer.visibility = View.VISIBLE
         dataRepository.getSeriesAiringToday().observe(viewLifecycleOwner) { item ->
             data.add(ItemsViewModel("Airing Today", item.error, item.data))
             data.let { adapter!!.addList(it) }
+            setShimmerVisibility(++count)
         }
         dataRepository.getSeriesTopRated().observe(viewLifecycleOwner) { item ->
             data.add(ItemsViewModel("Top Rated", item.error, item.data))
             data.let { adapter!!.addList(it) }
+            setShimmerVisibility(++count)
         }
         dataRepository.getSeriesPopular().observe(viewLifecycleOwner) { item ->
             data.add(ItemsViewModel("Popular", item.error, item.data))
             data.let { adapter!!.addList(it) }
+            setShimmerVisibility(++count)
         }
         dataRepository.getSeriesOnTheAir().observe(viewLifecycleOwner) { item ->
             data.add(ItemsViewModel("On The Air", item.error, item.data))
             data.let { adapter!!.addList(it) }
+            setShimmerVisibility(++count)
         }
     }
-    
+
     private fun getAllMoviesData() {
+        var count = 0
         data.clear()
+        shimmer.startShimmer()
+        binding.recyclerViewContent.visibility = View.GONE
+        shimmer.visibility = View.VISIBLE
         dataRepository.getMoviePopular().observe(viewLifecycleOwner) { item->
             data.add(ItemsViewModel("Popular", item.error, item.data))
             data.let { adapter!!.addList(it) }
+            setShimmerVisibility(++count)
         }
         dataRepository.getMovieTopRated().observe(viewLifecycleOwner) { item->
             data.add(ItemsViewModel("Top Rated", item.error, item.data))
             data.let { adapter!!.addList(it) }
+            setShimmerVisibility(++count)
         }
         dataRepository.getMovieUpcoming().observe(viewLifecycleOwner) { item->
             data.add(ItemsViewModel("Upcoming", item.error, item.data))
             data.let { adapter!!.addList(it) }
+            setShimmerVisibility(++count)
         }
         dataRepository.getMovieNowPlaying().observe(viewLifecycleOwner) { item->
             data.add(ItemsViewModel("Now Playing", item.error, item.data))
             data.let { adapter!!.addList(it) }
-        }        
+            setShimmerVisibility(++count)
+        }
+    }
+
+    private fun setShimmerVisibility(count: Int){
+        if (count == 4){
+            shimmer.stopShimmer()
+            shimmer.visibility = View.GONE
+            binding.recyclerViewContent.visibility = View.VISIBLE
+        }
+        val handler = Handler(Looper.getMainLooper())
+        handler.postDelayed({
+            shimmer.stopShimmer()
+            shimmer.visibility = View.GONE
+            binding.recyclerViewContent.visibility = View.VISIBLE
+        }, 30000)
     }
 }

@@ -1,4 +1,4 @@
-package com.halilmasali.moviediscover
+package com.halilmasali.moviediscover.viewModels
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

@@ -1,4 +1,4 @@
-package com.halilmasali.moviediscover
+package com.halilmasali.moviediscover.ui.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.halilmasali.moviediscover.dataRepository.apiRepository.ExceptionHandler
 import com.halilmasali.moviediscover.databinding.CustomItemBinding
+import com.halilmasali.moviediscover.viewModels.ItemsViewModel
 
 class CustomItemAdapter(private var items: ArrayList<ItemsViewModel>) :
     RecyclerView.Adapter<CustomItemAdapter.ViewHolder>() {
