@@ -8,7 +8,9 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.halilmasali.moviediscover.R
 import com.halilmasali.moviediscover.dataRepository.apiRepository.ExceptionHandler
+import com.halilmasali.moviediscover.dataRepository.apiRepository.ErrorType
 import com.halilmasali.moviediscover.databinding.CustomItemBinding
 import com.halilmasali.moviediscover.viewModels.ItemsViewModel
 
@@ -38,11 +40,28 @@ class CustomItemAdapter(private var items: ArrayList<ItemsViewModel>) :
         val item = items[position]
         holder.title.text = item.title
         if (item.error != null) {
-            holder.error.text = ExceptionHandler.handleError(item.error)
-            holder.error.visibility = View.VISIBLE
-            holder.buttonRefresh.visibility = View.VISIBLE
-            // TODO refresh click add
-            holder.buttonRefresh.setOnClickListener { }
+            when(ExceptionHandler.handleError(item.error)){
+                ErrorType.NO_INTERNET_CONNECTION -> {
+                    holder.error.text = holder.context.getString(R.string.check_internet_connection)
+                    holder.error.visibility = View.VISIBLE
+                    holder.buttonRefresh.visibility = View.VISIBLE
+                }
+                ErrorType.API_ERROR -> {
+                    holder.error.text = holder.context.getString(R.string.api_error_message)
+                    holder.error.visibility = View.VISIBLE
+                    holder.buttonRefresh.visibility = View.INVISIBLE
+                }
+                ErrorType.UNKNOWN_ERROR -> {
+                    holder.error.text = holder.context.getString(R.string.unknown_error_message)
+                    holder.error.visibility = View.VISIBLE
+                    holder.buttonRefresh.visibility = View.INVISIBLE
+                }
+                else -> {
+                    holder.error.visibility = View.INVISIBLE
+                    holder.buttonRefresh.visibility = View.INVISIBLE
+                }
+            }
+            holder.buttonRefresh.setOnClickListener { onItemClickListener?.onRefreshClick() }
         }
         val recyclerViewInner = holder.recyclerViewInner
         recyclerViewInner.layoutManager = LinearLayoutManager(
@@ -64,6 +83,7 @@ class CustomItemAdapter(private var items: ArrayList<ItemsViewModel>) :
     }
     interface OnItemClickListener {
         fun onItemClick(data: Any)
+        fun onRefreshClick()
     }
     private var onItemClickListener: OnItemClickListener? = null
 

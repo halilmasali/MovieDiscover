@@ -7,36 +7,41 @@ import java.net.UnknownHostException
 
 class ExceptionHandler {
     companion object {
-        fun handleError(error: Any?): String {
+        fun handleError(error: Any?): ErrorType {
             if (error == null)
-                return ""
+                return ErrorType.NO_ERROR
             return when (error) {
                 is Exception -> {
-                    if (error is UnknownHostException){
-                        return "Please check your Internet connection."
+                    if (error is UnknownHostException) {
+                        ErrorType.NO_INTERNET_CONNECTION
                     } else
-                        error.message ?: "Error"
+                        ErrorType.UNKNOWN_ERROR
                 }
 
                 is Throwable -> {
-                    error.message ?: "Error"
+                    ErrorType.UNKNOWN_ERROR
                 }
 
                 is ResponseBody -> {
                     parseErrorMessage(error)
                 }
 
-                else -> "Error"
+                else -> ErrorType.UNKNOWN_ERROR
             }
         }
 
-        private fun parseErrorMessage(responseBody: ResponseBody?): String {
+        private fun parseErrorMessage(responseBody: ResponseBody?): ErrorType {
             return try {
                 val errorJson = responseBody?.string()
                 val jsonObject = JSONObject(errorJson!!)
-                jsonObject.optString("status_message", "Error")
+                val statusMessage = jsonObject.optString("status_message", "Error")
+                if (statusMessage != "Error") {
+                    ErrorType.API_ERROR
+                } else {
+                    ErrorType.UNKNOWN_ERROR
+                }
             } catch (e: Exception) {
-                "Error parsing response body"
+                ErrorType.API_ERROR
             }
         }
     }

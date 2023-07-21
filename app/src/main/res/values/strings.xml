@@ -7,4 +7,7 @@
     <string name="release_date_text">Release Date</string>
     <string name="average_vote_text">Average Vote</string>
     <string name="overview_text">Overview</string>
+    <string name="check_internet_connection">Check Internet Connection</string>
+    <string name="api_error_message">Api Error</string>
+    <string name="unknown_error_message">Unknown Error</string>
 </resources>

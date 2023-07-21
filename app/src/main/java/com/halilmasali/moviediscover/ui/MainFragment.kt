@@ -51,6 +51,13 @@ class MainFragment : Fragment() {
                 sharedViewModel.saveDetailData(data)
                 findNavController().navigate(R.id.action_mainFragment_to_detailsFragment)
             }
+
+            override fun onRefreshClick() {
+                if (binding.toggleButton.checkedButtonId == binding.button1.id)
+                    getAllMoviesData()
+                else if (binding.toggleButton.checkedButtonId == binding.button2.id)
+                    getAllSeriesData()
+            }
         })
         getAllMoviesData() // First load movie data
         binding.toggleButton.check(binding.button1.id)
