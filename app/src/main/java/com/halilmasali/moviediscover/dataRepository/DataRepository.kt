@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.halilmasali.moviediscover.Constants
 import com.halilmasali.moviediscover.dataRepository.apiRepository.ApiConnection
+import com.halilmasali.moviediscover.dataRepository.apiRepository.creditsModel.CreditsModelCast
 import com.halilmasali.moviediscover.dataRepository.apiRepository.movies.MovieModelResults
 import com.halilmasali.moviediscover.dataRepository.apiRepository.series.SeriesModelResults
 import com.halilmasali.moviediscover.dataRepository.roomRepository.LocalMoviesData
@@ -150,21 +151,30 @@ class DataRepository(private val lifecycleOwner: LifecycleOwner, context: Contex
         return topRatedLiveData
     }
 
-    // TODO Series Similar data is unique to selected content, so may be create new table.
-    fun getSeriesSimilar(seriesId: String) {
-        api.getSeriesSimilarList(seriesId).observe(lifecycleOwner) { similar ->
-            if (similar != null) {
-                println("Series Similar: ${similar.data?.results?.get(0)?.name}")
-                val data = LocalSeriesData(
-                    5,
-                    "SeriesSimilar",
-                    Constants.ExpirationTime,
-                    similar.data?.results
-                )
-                room.insertDataToCache(data)
-            } else
+    fun getSeriesSimilar(seriesId: Int): LiveData<DataResult<ArrayList<SeriesModelResults>>> {
+        val liveData: MutableLiveData<DataResult<ArrayList<SeriesModelResults>>> = MutableLiveData()
+        api.getSeriesSimilarList(seriesId.toString()).observe(lifecycleOwner) { similar ->
+            if (similar.data?.results != null) {
+                liveData.value = DataResult(similar.data!!.results, null)
+            } else {
+                liveData.value = DataResult(null, similar.error)
                 println("Response null")
+            }
         }
+        return liveData
+    }
+
+    fun getSeriesCast(seriesId: Int): LiveData<DataResult<ArrayList<CreditsModelCast>>> {
+        val liveData: MutableLiveData<DataResult<ArrayList<CreditsModelCast>>> = MutableLiveData()
+        api.getSeriesCredits(seriesId).observe(lifecycleOwner) { credits ->
+            if (credits.data?.cast != null) {
+                liveData.value = DataResult(credits.data!!.cast, null)
+            } else {
+                liveData.value = DataResult(null, credits.error)
+                println("Response null")
+            }
+        }
+        return liveData
     }
     // endregion
 
@@ -294,6 +304,32 @@ class DataRepository(private val lifecycleOwner: LifecycleOwner, context: Contex
                         }
                 }
             }
+        return liveData
+    }
+
+    fun getMoviesSimilar(movieId: Int): LiveData<DataResult<ArrayList<MovieModelResults>>> {
+        val liveData: MutableLiveData<DataResult<ArrayList<MovieModelResults>>> = MutableLiveData()
+        api.getMoviesSimilarList(movieId).observe(lifecycleOwner) { similar ->
+            if (similar.data?.results != null) {
+                liveData.value = DataResult(similar.data!!.results, null)
+            } else {
+                liveData.value = DataResult(null, similar.error)
+                println("Response null")
+            }
+        }
+        return liveData
+    }
+
+    fun getMovieCast(movieId: Int): LiveData<DataResult<ArrayList<CreditsModelCast>>> {
+        val liveData: MutableLiveData<DataResult<ArrayList<CreditsModelCast>>> = MutableLiveData()
+        api.getMovieCredits(movieId).observe(lifecycleOwner) { credits ->
+            if (credits.data?.cast != null) {
+                liveData.value = DataResult(credits.data!!.cast, null)
+            } else {
+                liveData.value = DataResult(null, credits.error)
+                println("Response null")
+            }
+        }
         return liveData
     }
     // endregion

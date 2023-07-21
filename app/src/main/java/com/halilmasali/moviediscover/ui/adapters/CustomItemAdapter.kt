@@ -61,7 +61,11 @@ class CustomItemAdapter(private var items: ArrayList<ItemsViewModel>) :
                     holder.buttonRefresh.visibility = View.INVISIBLE
                 }
             }
-            holder.buttonRefresh.setOnClickListener { onItemClickListener?.onRefreshClick() }
+            holder.buttonRefresh.setOnClickListener {
+                holder.error.visibility = View.INVISIBLE
+                holder.buttonRefresh.visibility = View.INVISIBLE
+                onItemClickListener?.onRefreshClick()
+            }
         }
         val recyclerViewInner = holder.recyclerViewInner
         recyclerViewInner.layoutManager = LinearLayoutManager(

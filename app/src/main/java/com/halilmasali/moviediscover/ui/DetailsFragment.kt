@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,6 +15,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.halilmasali.moviediscover.Constants
 import com.halilmasali.moviediscover.R
 import com.halilmasali.moviediscover.dataRepository.DataRepository
+import com.halilmasali.moviediscover.dataRepository.apiRepository.creditsModel.CreditsModelCast
 import com.halilmasali.moviediscover.dataRepository.apiRepository.movies.MovieModelResults
 import com.halilmasali.moviediscover.dataRepository.apiRepository.series.SeriesModelResults
 import com.halilmasali.moviediscover.databinding.FragmentDetailsBinding
@@ -30,6 +32,7 @@ class DetailsFragment : Fragment() {
     private lateinit var data: ArrayList<ItemsViewModel>
     private lateinit var dataRepository: DataRepository
     private val sharedViewModel: SharedViewModel<Any> by activityViewModels()
+    private var detailType: Any? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -55,20 +58,28 @@ class DetailsFragment : Fragment() {
 
         adapter?.setOnItemClickListener(object : CustomItemAdapter.OnItemClickListener {
             override fun onItemClick(data: Any) {
-                sharedViewModel.saveDetailData(data)
-                findNavController().currentDestination?.getAction(R.id.action_detailsFragment_self)?.let {
-                    findNavController().popBackStack(it.destinationId, false)
+                if (data is CreditsModelCast){
+                    Toast.makeText(requireContext(), data.name, Toast.LENGTH_SHORT).show()
+                } else{
+                    sharedViewModel.saveDetailData(data)
+                    findNavController().currentDestination?.getAction(R.id.action_detailsFragment_self)?.let {
+                        findNavController().popBackStack(it.destinationId, false)
+                    }
                 }
             }
+            override fun onRefreshClick() {
+                if (detailType is SeriesModelResults)
+                    getSeriesDetail((detailType as SeriesModelResults).id!!)
+                else if (detailType is MovieModelResults)
+                    getMovieDetail((detailType as MovieModelResults).id!!)
+            }
         })
-
-        getAllSeriesData()
-
-
 
         sharedViewModel.detailData.observe(viewLifecycleOwner){ data ->
             when(data){
                 is SeriesModelResults -> {
+                    detailType = data
+                    getSeriesDetail(data.id!!)
                     binding.textTitle.text = data.name
                     binding.textReleaseDate.text = data.firstAirDate
                     binding.textAvgVote.text = data.voteAverage.toString()
@@ -83,6 +94,8 @@ class DetailsFragment : Fragment() {
                         .into(binding.imagePoster)
                 }
                 is MovieModelResults -> {
+                    detailType = data
+                    getMovieDetail(data.id!!)
                     binding.textTitle.text = data.title
                     binding.textReleaseDate.text = data.releaseDate
                     binding.textAvgVote.text = data.voteAverage.toString()
@@ -100,23 +113,27 @@ class DetailsFragment : Fragment() {
         }
         return binding.root
     }
-    // FIXME it's for test delete it
-    private fun getAllSeriesData() {
+
+    private fun getSeriesDetail(seriesId:Int){
         data.clear()
-        dataRepository.getSeriesAiringToday().observe(viewLifecycleOwner) { item ->
-            data.add(ItemsViewModel("Airing Today", item.error, item.data))
+        dataRepository.getSeriesCast(seriesId).observe(viewLifecycleOwner) { item ->
+            data.add(ItemsViewModel("Cast", item.error, item.data))
             data.let { adapter!!.addList(it) }
         }
-        dataRepository.getSeriesTopRated().observe(viewLifecycleOwner) { item ->
-            data.add(ItemsViewModel("Top Rated", item.error, item.data))
+        dataRepository.getSeriesSimilar(seriesId).observe(viewLifecycleOwner) { item->
+            data.add(ItemsViewModel("Similar Series", item.error, item.data))
             data.let { adapter!!.addList(it) }
         }
-        dataRepository.getSeriesPopular().observe(viewLifecycleOwner) { item ->
-            data.add(ItemsViewModel("Popular", item.error, item.data))
+    }
+
+    private fun getMovieDetail(movieId:Int){
+        data.clear()
+        dataRepository.getMovieCast(movieId).observe(viewLifecycleOwner) { item ->
+            data.add(ItemsViewModel("Cast", item.error, item.data))
             data.let { adapter!!.addList(it) }
         }
-        dataRepository.getSeriesOnTheAir().observe(viewLifecycleOwner) { item ->
-            data.add(ItemsViewModel("On The Air", item.error, item.data))
+        dataRepository.getMoviesSimilar(movieId).observe(viewLifecycleOwner) { item ->
+            data.add(ItemsViewModel("Similar Movies", item.error, item.data))
             data.let { adapter!!.addList(it) }
         }
     }

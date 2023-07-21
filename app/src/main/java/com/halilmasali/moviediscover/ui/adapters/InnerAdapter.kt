@@ -9,6 +9,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.material.card.MaterialCardView
 import com.halilmasali.moviediscover.Constants
+import com.halilmasali.moviediscover.dataRepository.apiRepository.creditsModel.CreditsModelCast
 import com.halilmasali.moviediscover.dataRepository.apiRepository.movies.MovieModelResults
 import com.halilmasali.moviediscover.dataRepository.apiRepository.series.SeriesModelResults
 import com.halilmasali.moviediscover.databinding.MoviePosterBinding
@@ -43,6 +44,13 @@ class InnerAdapter(private val items: List<Any>) : RecyclerView.Adapter<InnerAda
             is MovieModelResults ->{
                 Glide.with(holder.context).load(
                     Constants.ImageBaseUrl + item.posterPath)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(holder.imageCard)
+                holder.card.setOnClickListener { onItemClickListener?.onItemClick(item) }
+            }
+            is CreditsModelCast ->{
+                Glide.with(holder.context).load(
+                    Constants.ImageBaseUrl + item.profilePath)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(holder.imageCard)
                 holder.card.setOnClickListener { onItemClickListener?.onItemClick(item) }

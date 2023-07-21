@@ -7,6 +7,8 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import com.halilmasali.moviediscover.Constants
 import com.halilmasali.moviediscover.dataRepository.DataResult
+import com.halilmasali.moviediscover.dataRepository.apiRepository.creditsModel.CreditsModelRoot
+import com.halilmasali.moviediscover.dataRepository.apiRepository.movies.ICreditsMoviesData
 import com.halilmasali.moviediscover.dataRepository.apiRepository.movies.INowPlayingData
 import com.halilmasali.moviediscover.dataRepository.apiRepository.movies.MovieModelRoot
 import com.halilmasali.moviediscover.dataRepository.apiRepository.movies.IPopularData
@@ -14,6 +16,7 @@ import com.halilmasali.moviediscover.dataRepository.apiRepository.movies.ISimila
 import com.halilmasali.moviediscover.dataRepository.apiRepository.movies.ITopRatedData
 import com.halilmasali.moviediscover.dataRepository.apiRepository.movies.IUpcomingData
 import com.halilmasali.moviediscover.dataRepository.apiRepository.series.IAiringTodayData
+import com.halilmasali.moviediscover.dataRepository.apiRepository.series.ICreditsSeriesData
 import com.halilmasali.moviediscover.dataRepository.apiRepository.series.IOnTheAirData
 import com.halilmasali.moviediscover.dataRepository.apiRepository.series.ISeriesPopularData
 import com.halilmasali.moviediscover.dataRepository.apiRepository.series.ISeriesTopRatedData
@@ -170,6 +173,36 @@ class ApiConnection: ViewModel() {
         }
         return similarMoviesLiveData
     }
+
+    fun getMovieCredits(movieId:Int): LiveData<DataResult<CreditsModelRoot>> {
+        val creditsLiveData: MutableLiveData<DataResult<CreditsModelRoot>> = MutableLiveData()
+        viewModelScope.launch {
+            val creditsService = ApiClient.getClient(Constants.ApiBaseUrl)
+                .create(ICreditsMoviesData::class.java)
+            val creditsModelRootCall = creditsService.createGet(Constants.ApiKey,movieId)
+            try {
+                creditsModelRootCall.enqueue(object : Callback<CreditsModelRoot> {
+                    override fun onResponse(
+                        call: Call<CreditsModelRoot>,
+                        response: Response<CreditsModelRoot>
+                    ) {
+                        if (response.isSuccessful){
+                            creditsLiveData.value = DataResult(response.body(),null) // Update the LiveData with the result
+                        } else {
+                            creditsLiveData.value = DataResult(null,response.errorBody()) // Update the LiveData with null if the response is not successful
+                        }
+                    }
+
+                    override fun onFailure(call: Call<CreditsModelRoot>, t: Throwable) {
+                        creditsLiveData.value = DataResult(null,t) // Update the LiveData with null in case of failure
+                    }
+                })
+            } catch (e:Exception) {
+                creditsLiveData.value = DataResult(null,e)
+            }
+        }
+        return creditsLiveData
+    }
     //endregion
 
     //region Series Requests
@@ -320,6 +353,36 @@ class ApiConnection: ViewModel() {
             }
         }
         return similarSeriesLiveData
+    }
+
+    fun getSeriesCredits(seriesId:Int): LiveData<DataResult<CreditsModelRoot>> {
+        val creditsLiveData: MutableLiveData<DataResult<CreditsModelRoot>> = MutableLiveData()
+        viewModelScope.launch {
+            val creditsService = ApiClient.getClient(Constants.ApiBaseUrl)
+                .create(ICreditsSeriesData::class.java)
+            val creditsModelRootCall = creditsService.createGet(Constants.ApiKey,seriesId)
+            try {
+                creditsModelRootCall.enqueue(object : Callback<CreditsModelRoot> {
+                    override fun onResponse(
+                        call: Call<CreditsModelRoot>,
+                        response: Response<CreditsModelRoot>
+                    ) {
+                        if (response.isSuccessful){
+                            creditsLiveData.value = DataResult(response.body(),null) // Update the LiveData with the result
+                        } else {
+                            creditsLiveData.value = DataResult(null,response.errorBody()) // Update the LiveData with null if the response is not successful
+                        }
+                    }
+
+                    override fun onFailure(call: Call<CreditsModelRoot>, t: Throwable) {
+                        creditsLiveData.value = DataResult(null,t) // Update the LiveData with null in case of failure
+                    }
+                })
+            }catch (e:Exception) {
+                creditsLiveData.value = DataResult(null,e)
+            }
+        }
+        return creditsLiveData
     }
     //endregion
 }
