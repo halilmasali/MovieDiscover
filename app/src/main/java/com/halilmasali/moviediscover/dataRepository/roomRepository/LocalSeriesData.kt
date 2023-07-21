@@ -9,7 +9,7 @@ import com.halilmasali.moviediscover.dataRepository.apiRepository.series.SeriesM
 @Entity(tableName = "local_series_data")
 @TypeConverters(Converters::class)
 data class LocalSeriesData(
-    @PrimaryKey(autoGenerate = true) val id:Int,
+    @PrimaryKey(autoGenerate = true) val id:Int? = null,
     @ColumnInfo(name = "category") val category:String,
     @ColumnInfo(name ="expiration_time") val expirationTime: Long,
     @ColumnInfo(name ="data") val data: ArrayList<SeriesModelResults>? = null,

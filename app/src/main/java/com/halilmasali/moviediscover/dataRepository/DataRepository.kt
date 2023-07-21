@@ -34,10 +34,9 @@ class DataRepository(private val lifecycleOwner: LifecycleOwner, context: Contex
                         .observe(lifecycleOwner) { airingTodayList ->
                             if (airingTodayList.data?.results != null) {
                                 val data = LocalSeriesData(
-                                    1,
-                                    "SeriesAiringToday",
-                                    Constants.ExpirationTime + System.currentTimeMillis(),
-                                    airingTodayList.data?.results
+                                    category = "SeriesAiringToday",
+                                    expirationTime = Constants.ExpirationTime + System.currentTimeMillis(),
+                                    data = airingTodayList.data?.results
                                 )
                                 room.insertDataToCache(data)
                                 airingTodayLiveData.value =
@@ -68,10 +67,9 @@ class DataRepository(private val lifecycleOwner: LifecycleOwner, context: Contex
                         .observe(lifecycleOwner) { onTheAir ->
                             if (onTheAir.data?.results != null) {
                                 val data = LocalSeriesData(
-                                    2,
-                                    "SeriesOnTheAir",
-                                    Constants.ExpirationTime + System.currentTimeMillis(),
-                                    onTheAir.data?.results
+                                    category = "SeriesOnTheAir",
+                                    expirationTime = Constants.ExpirationTime + System.currentTimeMillis(),
+                                    data = onTheAir.data?.results
                                 )
                                 room.insertDataToCache(data)
                                 onTheAirLiveData.value = DataResult(onTheAir.data!!.results, null)
@@ -101,10 +99,9 @@ class DataRepository(private val lifecycleOwner: LifecycleOwner, context: Contex
                         .observe(lifecycleOwner) { popular ->
                             if (popular.data?.results != null) {
                                 val data = LocalSeriesData(
-                                    3,
-                                    "SeriesPopular",
-                                    Constants.ExpirationTime + System.currentTimeMillis(),
-                                    popular.data?.results
+                                    category = "SeriesPopular",
+                                    expirationTime = Constants.ExpirationTime + System.currentTimeMillis(),
+                                    data = popular.data?.results
                                 )
                                 room.insertDataToCache(data)
                                 popularLiveData.value = DataResult(popular.data!!.results, null)
@@ -134,10 +131,9 @@ class DataRepository(private val lifecycleOwner: LifecycleOwner, context: Contex
                         .observe(lifecycleOwner) { topRated ->
                             if (topRated.data?.results != null) {
                                 val data = LocalSeriesData(
-                                    4,
-                                    "SeriesTopRated",
-                                    Constants.ExpirationTime + System.currentTimeMillis(),
-                                    topRated.data?.results
+                                    category = "SeriesTopRated",
+                                    expirationTime = Constants.ExpirationTime + System.currentTimeMillis(),
+                                    data = topRated.data?.results
                                 )
                                 room.insertDataToCache(data)
                                 topRatedLiveData.value = DataResult(topRated.data!!.results, null)
@@ -194,10 +190,9 @@ class DataRepository(private val lifecycleOwner: LifecycleOwner, context: Contex
                         .observe(lifecycleOwner) { item ->
                             if (item.data?.results != null) {
                                 val data = LocalMoviesData(
-                                    1,
-                                    "MovieNowPlaying",
-                                    Constants.ExpirationTime + System.currentTimeMillis(),
-                                    item.data?.results
+                                    category = "MovieNowPlaying",
+                                    expirationTime = Constants.ExpirationTime + System.currentTimeMillis(),
+                                    data = item.data?.results
                                 )
                                 room.insertDataToCache(data)
                                 liveData.value = DataResult(item.data!!.results, null)
@@ -226,10 +221,9 @@ class DataRepository(private val lifecycleOwner: LifecycleOwner, context: Contex
                         .observe(lifecycleOwner) { item ->
                             if (item.data?.results != null) {
                                 val data = LocalMoviesData(
-                                    2,
-                                    "MoviePopular",
-                                    Constants.ExpirationTime + System.currentTimeMillis(),
-                                    item.data?.results
+                                    category = "MoviePopular",
+                                    expirationTime = Constants.ExpirationTime + System.currentTimeMillis(),
+                                    data = item.data?.results
                                 )
                                 room.insertDataToCache(data)
                                 liveData.value = DataResult(item.data!!.results, null)
@@ -258,10 +252,9 @@ class DataRepository(private val lifecycleOwner: LifecycleOwner, context: Contex
                         .observe(lifecycleOwner) { item ->
                             if (item.data?.results != null) {
                                 val data = LocalMoviesData(
-                                    3,
-                                    "MovieTopRated",
-                                    Constants.ExpirationTime + System.currentTimeMillis(),
-                                    item.data?.results
+                                    category = "MovieTopRated",
+                                    expirationTime = Constants.ExpirationTime + System.currentTimeMillis(),
+                                    data = item.data?.results
                                 )
                                 room.insertDataToCache(data)
                                 liveData.value = DataResult(item.data!!.results, null)
@@ -290,10 +283,9 @@ class DataRepository(private val lifecycleOwner: LifecycleOwner, context: Contex
                         .observe(lifecycleOwner) { item ->
                             if (item.data?.results != null) {
                                 val data = LocalMoviesData(
-                                    4,
-                                    "MovieUpcoming",
-                                    Constants.ExpirationTime + System.currentTimeMillis(),
-                                    item.data?.results
+                                    category = "MovieUpcoming",
+                                    expirationTime = Constants.ExpirationTime + System.currentTimeMillis(),
+                                    data = item.data?.results
                                 )
                                 room.insertDataToCache(data)
                                 liveData.value = DataResult(item.data!!.results, null)
