@@ -1,3 +1,10 @@
 <resources>
-    <string name="app_name">MovieDiscover</string>
+    <string name="app_name">Movie Discover</string>
+    <string name="movies_text">Movies</string>
+    <string name="series_text">Series</string>
+    <string name="refresh_text">Refresh</string>
+    <string name="poster_content_desc">poster</string>
+    <string name="release_date_text">Release Date</string>
+    <string name="average_vote_text">Average Vote</string>
+    <string name="overview_text">Overview</string>
 </resources>
