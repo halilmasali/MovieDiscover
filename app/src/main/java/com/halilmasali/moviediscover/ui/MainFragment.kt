@@ -83,22 +83,22 @@ class MainFragment : Fragment() {
         binding.recyclerViewContent.visibility = View.GONE
         shimmer.visibility = View.VISIBLE
         dataRepository.getSeriesAiringToday().observe(viewLifecycleOwner) { item ->
-            data.add(ItemsViewModel("Airing Today", item.error, item.data))
+            data.add(ItemsViewModel(4,"Airing Today", item.error, item.data))
             data.let { adapter!!.addList(it) }
             setShimmerVisibility(++count)
         }
         dataRepository.getSeriesTopRated().observe(viewLifecycleOwner) { item ->
-            data.add(ItemsViewModel("Top Rated", item.error, item.data))
+            data.add(ItemsViewModel(1,"Top Rated", item.error, item.data))
             data.let { adapter!!.addList(it) }
             setShimmerVisibility(++count)
         }
         dataRepository.getSeriesPopular().observe(viewLifecycleOwner) { item ->
-            data.add(ItemsViewModel("Popular", item.error, item.data))
+            data.add(ItemsViewModel(2,"Popular", item.error, item.data))
             data.let { adapter!!.addList(it) }
             setShimmerVisibility(++count)
         }
         dataRepository.getSeriesOnTheAir().observe(viewLifecycleOwner) { item ->
-            data.add(ItemsViewModel("On The Air", item.error, item.data))
+            data.add(ItemsViewModel(3,"On The Air", item.error, item.data))
             data.let { adapter!!.addList(it) }
             setShimmerVisibility(++count)
         }
@@ -111,22 +111,22 @@ class MainFragment : Fragment() {
         binding.recyclerViewContent.visibility = View.GONE
         shimmer.visibility = View.VISIBLE
         dataRepository.getMoviePopular().observe(viewLifecycleOwner) { item->
-            data.add(ItemsViewModel("Popular", item.error, item.data))
+            data.add(ItemsViewModel(2,"Popular", item.error, item.data))
             data.let { adapter!!.addList(it) }
             setShimmerVisibility(++count)
         }
         dataRepository.getMovieTopRated().observe(viewLifecycleOwner) { item->
-            data.add(ItemsViewModel("Top Rated", item.error, item.data))
+            data.add(ItemsViewModel(1,"Top Rated", item.error, item.data))
             data.let { adapter!!.addList(it) }
             setShimmerVisibility(++count)
         }
         dataRepository.getMovieUpcoming().observe(viewLifecycleOwner) { item->
-            data.add(ItemsViewModel("Upcoming", item.error, item.data))
+            data.add(ItemsViewModel(4,"Upcoming", item.error, item.data))
             data.let { adapter!!.addList(it) }
             setShimmerVisibility(++count)
         }
         dataRepository.getMovieNowPlaying().observe(viewLifecycleOwner) { item->
-            data.add(ItemsViewModel("Now Playing", item.error, item.data))
+            data.add(ItemsViewModel(3,"Now Playing", item.error, item.data))
             data.let { adapter!!.addList(it) }
             setShimmerVisibility(++count)
         }

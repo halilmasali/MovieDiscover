@@ -117,11 +117,11 @@ class DetailsFragment : Fragment() {
     private fun getSeriesDetail(seriesId:Int){
         data.clear()
         dataRepository.getSeriesCast(seriesId).observe(viewLifecycleOwner) { item ->
-            data.add(ItemsViewModel("Cast", item.error, item.data))
+            data.add(ItemsViewModel(1,"Cast", item.error, item.data))
             data.let { adapter!!.addList(it) }
         }
         dataRepository.getSeriesSimilar(seriesId).observe(viewLifecycleOwner) { item->
-            data.add(ItemsViewModel("Similar Series", item.error, item.data))
+            data.add(ItemsViewModel(2,"Similar Series", item.error, item.data))
             data.let { adapter!!.addList(it) }
         }
     }
@@ -129,11 +129,11 @@ class DetailsFragment : Fragment() {
     private fun getMovieDetail(movieId:Int){
         data.clear()
         dataRepository.getMovieCast(movieId).observe(viewLifecycleOwner) { item ->
-            data.add(ItemsViewModel("Cast", item.error, item.data))
+            data.add(ItemsViewModel(1,"Cast", item.error, item.data))
             data.let { adapter!!.addList(it) }
         }
         dataRepository.getMoviesSimilar(movieId).observe(viewLifecycleOwner) { item ->
-            data.add(ItemsViewModel("Similar Movies", item.error, item.data))
+            data.add(ItemsViewModel(2,"Similar Movies", item.error, item.data))
             data.let { adapter!!.addList(it) }
         }
     }

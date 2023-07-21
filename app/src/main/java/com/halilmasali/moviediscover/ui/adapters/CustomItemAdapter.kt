@@ -82,6 +82,8 @@ class CustomItemAdapter(private var items: ArrayList<ItemsViewModel>) :
     }
 
     fun addList(addList: ArrayList<ItemsViewModel>) {
+        //Sort the list by priority
+        addList.sortBy { it.priority }
         items = addList
         notifyDataSetChanged()
     }
