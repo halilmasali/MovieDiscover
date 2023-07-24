@@ -22,7 +22,7 @@ class DataRepository(private val lifecycleOwner: LifecycleOwner, context: Contex
         val airingTodayLiveData: MutableLiveData<DataResult<ArrayList<SeriesModelResults>>> =
             MutableLiveData()
         // Used if cache data exists and has not expired.
-        room.getDataFromCacheByCategory<LocalSeriesData>("SeriesAiringToday")
+        room.getDataFromCacheByCategory<LocalSeriesData>(Constants.SeriesAiringToday)
             .observe(lifecycleOwner) { cacheData ->
                 if (cacheData != null) {
                     airingTodayLiveData.value = DataResult(cacheData.data, null)
@@ -34,7 +34,7 @@ class DataRepository(private val lifecycleOwner: LifecycleOwner, context: Contex
                         .observe(lifecycleOwner) { airingTodayList ->
                             if (airingTodayList.data?.results != null) {
                                 val data = LocalSeriesData(
-                                    category = "SeriesAiringToday",
+                                    category = Constants.SeriesAiringToday,
                                     expirationTime = Constants.ExpirationTime + System.currentTimeMillis(),
                                     data = airingTodayList.data?.results
                                 )
@@ -55,7 +55,7 @@ class DataRepository(private val lifecycleOwner: LifecycleOwner, context: Contex
         val onTheAirLiveData: MutableLiveData<DataResult<ArrayList<SeriesModelResults>>> =
             MutableLiveData()
         // Used if cache data exists and has not expired.
-        room.getDataFromCacheByCategory<LocalSeriesData>("SeriesOnTheAir")
+        room.getDataFromCacheByCategory<LocalSeriesData>(Constants.SeriesOnTheAir)
             .observe(lifecycleOwner) { cacheData ->
                 if (cacheData != null) {
                     onTheAirLiveData.value = DataResult(cacheData.data, null)
@@ -67,7 +67,7 @@ class DataRepository(private val lifecycleOwner: LifecycleOwner, context: Contex
                         .observe(lifecycleOwner) { onTheAir ->
                             if (onTheAir.data?.results != null) {
                                 val data = LocalSeriesData(
-                                    category = "SeriesOnTheAir",
+                                    category = Constants.SeriesOnTheAir,
                                     expirationTime = Constants.ExpirationTime + System.currentTimeMillis(),
                                     data = onTheAir.data?.results
                                 )
@@ -87,7 +87,7 @@ class DataRepository(private val lifecycleOwner: LifecycleOwner, context: Contex
         val popularLiveData: MutableLiveData<DataResult<ArrayList<SeriesModelResults>>> =
             MutableLiveData()
         // Used if cache data exists and has not expired.
-        room.getDataFromCacheByCategory<LocalSeriesData>("SeriesPopular")
+        room.getDataFromCacheByCategory<LocalSeriesData>(Constants.SeriesPopular)
             .observe(lifecycleOwner) { cacheData ->
                 if (cacheData != null) {
                     popularLiveData.value = DataResult(cacheData.data, null)
@@ -99,7 +99,7 @@ class DataRepository(private val lifecycleOwner: LifecycleOwner, context: Contex
                         .observe(lifecycleOwner) { popular ->
                             if (popular.data?.results != null) {
                                 val data = LocalSeriesData(
-                                    category = "SeriesPopular",
+                                    category = Constants.SeriesPopular,
                                     expirationTime = Constants.ExpirationTime + System.currentTimeMillis(),
                                     data = popular.data?.results
                                 )
@@ -119,7 +119,7 @@ class DataRepository(private val lifecycleOwner: LifecycleOwner, context: Contex
         val topRatedLiveData: MutableLiveData<DataResult<ArrayList<SeriesModelResults>>> =
             MutableLiveData()
         // Used if cache data exists and has not expired.
-        room.getDataFromCacheByCategory<LocalSeriesData>("SeriesTopRated")
+        room.getDataFromCacheByCategory<LocalSeriesData>(Constants.SeriesTopRated)
             .observe(lifecycleOwner) { cacheData ->
                 if (cacheData != null) {
                     topRatedLiveData.value = DataResult(cacheData.data, null)
@@ -131,7 +131,7 @@ class DataRepository(private val lifecycleOwner: LifecycleOwner, context: Contex
                         .observe(lifecycleOwner) { topRated ->
                             if (topRated.data?.results != null) {
                                 val data = LocalSeriesData(
-                                    category = "SeriesTopRated",
+                                    category = Constants.SeriesTopRated,
                                     expirationTime = Constants.ExpirationTime + System.currentTimeMillis(),
                                     data = topRated.data?.results
                                 )
@@ -178,7 +178,7 @@ class DataRepository(private val lifecycleOwner: LifecycleOwner, context: Contex
     fun getMovieNowPlaying(): LiveData<DataResult<ArrayList<MovieModelResults>>> {
         val liveData: MutableLiveData<DataResult<ArrayList<MovieModelResults>>> = MutableLiveData()
         // Used if cache data exists and has not expired.
-        room.getDataFromCacheByCategory<LocalMoviesData>("MovieNowPlaying")
+        room.getDataFromCacheByCategory<LocalMoviesData>(Constants.MovieNowPlaying)
             .observe(lifecycleOwner) { cacheData ->
                 if (cacheData != null) {
                     liveData.value = DataResult(cacheData.data, null)
@@ -190,7 +190,7 @@ class DataRepository(private val lifecycleOwner: LifecycleOwner, context: Contex
                         .observe(lifecycleOwner) { item ->
                             if (item.data?.results != null) {
                                 val data = LocalMoviesData(
-                                    category = "MovieNowPlaying",
+                                    category = Constants.MovieNowPlaying,
                                     expirationTime = Constants.ExpirationTime + System.currentTimeMillis(),
                                     data = item.data?.results
                                 )
@@ -209,7 +209,7 @@ class DataRepository(private val lifecycleOwner: LifecycleOwner, context: Contex
     fun getMoviePopular(): LiveData<DataResult<ArrayList<MovieModelResults>>> {
         val liveData: MutableLiveData<DataResult<ArrayList<MovieModelResults>>> = MutableLiveData()
         // Used if cache data exists and has not expired.
-        room.getDataFromCacheByCategory<LocalMoviesData>("MoviePopular")
+        room.getDataFromCacheByCategory<LocalMoviesData>(Constants.MoviePopular)
             .observe(lifecycleOwner) { cacheData ->
                 if (cacheData != null) {
                     liveData.value = DataResult(cacheData.data, null)
@@ -221,7 +221,7 @@ class DataRepository(private val lifecycleOwner: LifecycleOwner, context: Contex
                         .observe(lifecycleOwner) { item ->
                             if (item.data?.results != null) {
                                 val data = LocalMoviesData(
-                                    category = "MoviePopular",
+                                    category = Constants.MoviePopular,
                                     expirationTime = Constants.ExpirationTime + System.currentTimeMillis(),
                                     data = item.data?.results
                                 )
@@ -240,7 +240,7 @@ class DataRepository(private val lifecycleOwner: LifecycleOwner, context: Contex
     fun getMovieTopRated(): LiveData<DataResult<ArrayList<MovieModelResults>>> {
         val liveData: MutableLiveData<DataResult<ArrayList<MovieModelResults>>> = MutableLiveData()
         // Used if cache data exists and has not expired.
-        room.getDataFromCacheByCategory<LocalMoviesData>("MovieTopRated")
+        room.getDataFromCacheByCategory<LocalMoviesData>(Constants.MovieTopRated)
             .observe(lifecycleOwner) { cacheData ->
                 if (cacheData != null) {
                     liveData.value = DataResult(cacheData.data, null)
@@ -252,7 +252,7 @@ class DataRepository(private val lifecycleOwner: LifecycleOwner, context: Contex
                         .observe(lifecycleOwner) { item ->
                             if (item.data?.results != null) {
                                 val data = LocalMoviesData(
-                                    category = "MovieTopRated",
+                                    category = Constants.MovieTopRated,
                                     expirationTime = Constants.ExpirationTime + System.currentTimeMillis(),
                                     data = item.data?.results
                                 )
@@ -271,7 +271,7 @@ class DataRepository(private val lifecycleOwner: LifecycleOwner, context: Contex
     fun getMovieUpcoming(): LiveData<DataResult<ArrayList<MovieModelResults>>> {
         val liveData: MutableLiveData<DataResult<ArrayList<MovieModelResults>>> = MutableLiveData()
         // Used if cache data exists and has not expired.
-        room.getDataFromCacheByCategory<LocalMoviesData>("MovieUpcoming")
+        room.getDataFromCacheByCategory<LocalMoviesData>(Constants.MovieUpcoming)
             .observe(lifecycleOwner) { cacheData ->
                 if (cacheData != null) {
                     liveData.value = DataResult(cacheData.data, null)
@@ -283,7 +283,7 @@ class DataRepository(private val lifecycleOwner: LifecycleOwner, context: Contex
                         .observe(lifecycleOwner) { item ->
                             if (item.data?.results != null) {
                                 val data = LocalMoviesData(
-                                    category = "MovieUpcoming",
+                                    category = Constants.MovieUpcoming,
                                     expirationTime = Constants.ExpirationTime + System.currentTimeMillis(),
                                     data = item.data?.results
                                 )

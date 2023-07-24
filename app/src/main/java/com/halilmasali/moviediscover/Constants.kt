@@ -7,4 +7,13 @@ object Constants {
     const val ApiBaseUrl = "https://api.themoviedb.org/3/"
     const val ImageBaseUrl = "https://image.tmdb.org/t/p/w500/"
     const val ExpirationTime:Long = 600000 //10 dk
+    // Room Database Constants
+    const val SeriesAiringToday = "SeriesAiringToday"
+    const val SeriesOnTheAir = "SeriesOnTheAir"
+    const val SeriesPopular = "SeriesPopular"
+    const val SeriesTopRated = "SeriesTopRated"
+    const val MovieNowPlaying = "MovieNowPlaying"
+    const val MoviePopular = "MoviePopular"
+    const val MovieTopRated = "MovieTopRated"
+    const val MovieUpcoming = "MovieUpcoming"
 }
