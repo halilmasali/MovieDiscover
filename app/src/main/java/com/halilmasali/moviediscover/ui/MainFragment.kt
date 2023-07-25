@@ -8,10 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.facebook.shimmer.ShimmerFrameLayout
-import com.halilmasali.moviediscover.R
 import com.halilmasali.moviediscover.dataRepository.DataRepository
 import com.halilmasali.moviediscover.databinding.FragmentMainBinding
 import com.halilmasali.moviediscover.ui.adapters.CustomItemAdapter
@@ -29,6 +27,9 @@ class MainFragment : Fragment() {
     private lateinit var dataRepository: DataRepository
     private lateinit var shimmer: ShimmerFrameLayout
     private val sharedViewModel: SharedViewModel<Any> by activityViewModels()
+    private val mainActivity: MainActivity by lazy {
+        activity as MainActivity
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,8 +49,8 @@ class MainFragment : Fragment() {
         shimmer = binding.shimmerLayout
         adapter?.setOnItemClickListener(object : CustomItemAdapter.OnItemClickListener {
             override fun onItemClick(data: Any) {
-                sharedViewModel.saveDetailData(data)
-                findNavController().navigate(R.id.action_mainFragment_to_detailsFragment)
+                sharedViewModel.addDetailData(data)
+                mainActivity.customFragmentManager.addFragment(DetailsFragment())
             }
 
             override fun onRefreshClick() {
@@ -74,6 +75,12 @@ class MainFragment : Fragment() {
             }
         }
         return binding.root
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        _binding = null
+        mainActivity.finish()
     }
 
     private fun getAllSeriesData() {

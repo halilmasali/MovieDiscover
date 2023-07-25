@@ -6,14 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.halilmasali.moviediscover.Constants
-import com.halilmasali.moviediscover.R
 import com.halilmasali.moviediscover.dataRepository.DataRepository
 import com.halilmasali.moviediscover.dataRepository.apiRepository.creditsModel.CreditsModelCast
 import com.halilmasali.moviediscover.dataRepository.apiRepository.movies.MovieModelResults
@@ -33,6 +32,7 @@ class DetailsFragment : Fragment() {
     private lateinit var dataRepository: DataRepository
     private val sharedViewModel: SharedViewModel<Any> by activityViewModels()
     private var detailType: Any? = null
+    private var isLastItem = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -61,10 +61,7 @@ class DetailsFragment : Fragment() {
                 if (data is CreditsModelCast){
                     Toast.makeText(requireContext(), data.name, Toast.LENGTH_SHORT).show()
                 } else{
-                    sharedViewModel.saveDetailData(data)
-                    findNavController().currentDestination?.getAction(R.id.action_detailsFragment_self)?.let {
-                        findNavController().popBackStack(it.destinationId, false)
-                    }
+                    sharedViewModel.addDetailData(data)
                 }
             }
             override fun onRefreshClick() {
@@ -75,43 +72,29 @@ class DetailsFragment : Fragment() {
             }
         })
 
-        sharedViewModel.detailData.observe(viewLifecycleOwner){ data ->
-            when(data){
-                is SeriesModelResults -> {
-                    detailType = data
-                    getSeriesDetail(data.id!!)
-                    binding.textTitle.text = data.name
-                    binding.textReleaseDate.text = data.firstAirDate
-                    binding.textAvgVote.text = data.voteAverage.toString()
-                    binding.textOverview.text = data.overview
-                    Glide.with(this).load(
-                        Constants.ImageBaseUrl + data.backdropPath)
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .into(binding.imageBackdrop)
-                    Glide.with(this).load(
-                        Constants.ImageBaseUrl + data.posterPath)
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .into(binding.imagePoster)
-                }
-                is MovieModelResults -> {
-                    detailType = data
-                    getMovieDetail(data.id!!)
-                    binding.textTitle.text = data.title
-                    binding.textReleaseDate.text = data.releaseDate
-                    binding.textAvgVote.text = data.voteAverage.toString()
-                    binding.textOverview.text = data.overview
-                    Glide.with(this).load(
-                        Constants.ImageBaseUrl + data.backdropPath)
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .into(binding.imageBackdrop)
-                    Glide.with(this).load(
-                        Constants.ImageBaseUrl + data.posterPath)
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .into(binding.imagePoster)
+        sharedViewModel.detailDataList.observe(viewLifecycleOwner) { dataList ->
+            if (dataList.isNotEmpty()){
+                val lastData = dataList.last()
+                if (lastData != null) {
+                    updateFragmentContent(lastData)
+                    // Check if the last item is added to the list
+                    isLastItem = dataList.size == 1
                 }
             }
         }
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        // Handle back button press for fragment refresh data
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            sharedViewModel.removeLastDetailData()
+            if (isLastItem) {
+                isEnabled = false
+                requireActivity().onBackPressed()
+            }
+        }
     }
 
     private fun getSeriesDetail(seriesId:Int){
@@ -135,6 +118,45 @@ class DetailsFragment : Fragment() {
         dataRepository.getMoviesSimilar(movieId).observe(viewLifecycleOwner) { item ->
             data.add(ItemsViewModel(2,"Similar Movies", item.error, item.data))
             data.let { adapter!!.addList(it) }
+        }
+    }
+
+    private fun updateFragmentContent(data:Any){
+        // Scroll to top
+        binding.scrollView.post { binding.scrollView.scrollTo(0,0) }
+        when(data){
+            is SeriesModelResults -> {
+                detailType = data
+                getSeriesDetail(data.id!!)
+                binding.textTitle.text = data.name
+                binding.textReleaseDate.text = data.firstAirDate
+                binding.textAvgVote.text = data.voteAverage.toString()
+                binding.textOverview.text = data.overview
+                Glide.with(this).load(
+                    Constants.ImageBaseUrl + data.backdropPath)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(binding.imageBackdrop)
+                Glide.with(this).load(
+                    Constants.ImageBaseUrl + data.posterPath)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(binding.imagePoster)
+            }
+            is MovieModelResults -> {
+                detailType = data
+                getMovieDetail(data.id!!)
+                binding.textTitle.text = data.title
+                binding.textReleaseDate.text = data.releaseDate
+                binding.textAvgVote.text = data.voteAverage.toString()
+                binding.textOverview.text = data.overview
+                Glide.with(this).load(
+                    Constants.ImageBaseUrl + data.backdropPath)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(binding.imageBackdrop)
+                Glide.with(this).load(
+                    Constants.ImageBaseUrl + data.posterPath)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(binding.imagePoster)
+            }
         }
     }
 
