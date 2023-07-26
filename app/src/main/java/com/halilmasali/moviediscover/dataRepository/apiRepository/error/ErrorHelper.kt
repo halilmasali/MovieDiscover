@@ -1,4 +1,4 @@
-package com.halilmasali.moviediscover.dataRepository.apiRepository
+package com.halilmasali.moviediscover.dataRepository.apiRepository.error
 
 import android.content.Context
 import android.view.View
@@ -6,7 +6,7 @@ import com.halilmasali.moviediscover.R
 
 class ErrorHelper {
     companion object {
-        fun getErrorMessage(error: ErrorType,context: Context): String {
+        fun getErrorMessage(error: ErrorType, context: Context): String {
             return when (error) {
                 ErrorType.NO_INTERNET_CONNECTION -> context.getString(R.string.check_internet_connection)
                 ErrorType.API_ERROR -> context.getString(R.string.api_error_message)
@@ -27,5 +27,4 @@ class ErrorHelper {
             }
         }
     }
-
 }

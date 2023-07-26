@@ -8,8 +8,8 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.halilmasali.moviediscover.dataRepository.apiRepository.ErrorHelper
-import com.halilmasali.moviediscover.dataRepository.apiRepository.ExceptionHandler
+import com.halilmasali.moviediscover.dataRepository.apiRepository.error.ErrorHelper
+import com.halilmasali.moviediscover.dataRepository.apiRepository.error.ExceptionHandler
 import com.halilmasali.moviediscover.databinding.CustomItemBinding
 import com.halilmasali.moviediscover.viewModels.ItemsViewModel
 

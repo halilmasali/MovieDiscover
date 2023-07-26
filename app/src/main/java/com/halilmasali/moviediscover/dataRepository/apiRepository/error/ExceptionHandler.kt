@@ -1,4 +1,4 @@
-package com.halilmasali.moviediscover.dataRepository.apiRepository
+package com.halilmasali.moviediscover.dataRepository.apiRepository.error
 
 import okhttp3.ResponseBody
 import org.json.JSONObject

@@ -1,4 +1,4 @@
-package com.halilmasali.moviediscover.dataRepository.apiRepository
+package com.halilmasali.moviediscover.dataRepository.apiRepository.error
 
 enum class ErrorType {
     NO_ERROR,
