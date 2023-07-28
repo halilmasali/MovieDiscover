@@ -49,32 +49,43 @@
             android:textSize="25sp" />
     </FrameLayout>
 
-    <com.facebook.shimmer.ShimmerFrameLayout
-        android:id="@+id/shimmerLayout"
-        android:layout_width="0dp"
+    <ScrollView
+        android:id="@+id/scrollViewMain"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/frameLayout">
+        app:layout_constraintTop_toBottomOf="@+id/frameLayout"
+        tools:ignore="SpeakableTextPresentCheck">
+
         <LinearLayout
+            android:id="@+id/linearLayoutMain"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-            <include layout="@layout/cutom_item_shimmer" />
-            <include layout="@layout/cutom_item_shimmer" />
-            <include layout="@layout/cutom_item_shimmer" />
+            <com.halilmasali.moviediscover.ui.CustomItemView
+                android:id="@+id/customItemView1"
+                app:refreshText="@string/refresh_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <com.halilmasali.moviediscover.ui.CustomItemView
+                android:id="@+id/customItemView2"
+                app:refreshText="@string/refresh_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <com.halilmasali.moviediscover.ui.CustomItemView
+                android:id="@+id/customItemView3"
+                app:refreshText="@string/refresh_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <com.halilmasali.moviediscover.ui.CustomItemView
+                android:id="@+id/customItemView4"
+                app:refreshText="@string/refresh_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
         </LinearLayout>
-    </com.facebook.shimmer.ShimmerFrameLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewContent"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/frameLayout" />
-
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
