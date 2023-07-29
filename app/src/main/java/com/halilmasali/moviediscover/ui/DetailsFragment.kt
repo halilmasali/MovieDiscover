@@ -7,10 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.addCallback
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.facebook.shimmer.Shimmer
+import com.facebook.shimmer.ShimmerDrawable
 import com.halilmasali.moviediscover.Constants
+import com.halilmasali.moviediscover.R
 import com.halilmasali.moviediscover.dataRepository.DataRepository
 import com.halilmasali.moviediscover.dataRepository.apiRepository.creditsModel.CreditsModelCast
 import com.halilmasali.moviediscover.dataRepository.apiRepository.movies.MovieModelResults
@@ -26,6 +30,10 @@ class DetailsFragment : Fragment() {
     private lateinit var dataRepository: DataRepository
     private val sharedViewModel: SharedViewModel<Any> by activityViewModels()
     private var isLastItem = false
+    private lateinit var shimmer : Shimmer
+
+    // This is the placeholder for the imageView
+    private lateinit var shimmerDrawable :ShimmerDrawable
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,6 +53,19 @@ class DetailsFragment : Fragment() {
                     isLastItem = dataList.size == 1
                 }
             }
+        }
+        // Shimmer effect for movie card
+        shimmer = Shimmer.ColorHighlightBuilder()// The attributes for a ShimmerDrawable is set by this builder
+            .setBaseColor(ContextCompat.getColor(requireContext(), R.color.gray)) //the base color of the shimmer
+            .setDuration(1000) // how long the shimmering animation takes to do one full sweep
+            .setBaseAlpha(0.7f) //the alpha of the underlying children
+            .setHighlightAlpha(0.6f) // the shimmer alpha amount
+            .setDirection(Shimmer.Direction.LEFT_TO_RIGHT)
+            .setAutoStart(true)
+            .build()
+        // This is the placeholder for the imageView
+        shimmerDrawable = ShimmerDrawable().apply {
+            setShimmer(shimmer)
         }
         return binding.root
     }
@@ -83,11 +104,15 @@ class DetailsFragment : Fragment() {
                 binding.textOverview.text = data.overview
                 Glide.with(this).load(
                     Constants.ImageBaseUrl + data.backdropPath)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .placeholder(shimmerDrawable)
+                    .error(R.drawable.ic_broken_image)
+                    .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                     .into(binding.imageBackdrop)
                 Glide.with(this).load(
                     Constants.ImageBaseUrl + data.posterPath)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .placeholder(shimmerDrawable)
+                    .error(R.drawable.ic_broken_image)
+                    .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                     .into(binding.imagePoster)
             }
             is MovieModelResults -> {
@@ -98,11 +123,15 @@ class DetailsFragment : Fragment() {
                 binding.textOverview.text = data.overview
                 Glide.with(this).load(
                     Constants.ImageBaseUrl + data.backdropPath)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .placeholder(shimmerDrawable)
+                    .error(R.drawable.ic_broken_image)
+                    .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                     .into(binding.imageBackdrop)
                 Glide.with(this).load(
                     Constants.ImageBaseUrl + data.posterPath)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .placeholder(shimmerDrawable)
+                    .error(R.drawable.ic_broken_image)
+                    .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                     .into(binding.imagePoster)
             }
         }
