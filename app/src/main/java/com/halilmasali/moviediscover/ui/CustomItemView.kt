@@ -51,13 +51,18 @@ class CustomItemView(context: Context, attrs: AttributeSet?) : ConstraintLayout(
             binding.recyclerViewInner.layoutManager = LinearLayoutManager(
                 context, LinearLayoutManager.HORIZONTAL, false
             )
-            val innerAdapter = item.data?.let { InnerAdapter(it) }
-            binding.recyclerViewInner.adapter = innerAdapter
-            innerAdapter?.setOnItemClickListener(object : InnerAdapter.OnItemClickListener {
-                override fun onItemClick(data: Any) {
-                    onItemClickListener?.onItemClick(data)
-                }
-            })
+            if (item.data.isNullOrEmpty() && item.error == null) {
+                binding.textError.text = context.getString(R.string.no_data)
+                binding.textError.visibility = View.VISIBLE
+            } else {
+                val innerAdapter = item.data?.let { InnerAdapter(it) }
+                binding.recyclerViewInner.adapter = innerAdapter
+                innerAdapter?.setOnItemClickListener(object : InnerAdapter.OnItemClickListener {
+                    override fun onItemClick(data: Any) {
+                        onItemClickListener?.onItemClick(data)
+                    }
+                })
+            }
         }
     }
 

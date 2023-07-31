@@ -50,7 +50,9 @@ class MainFragment : Fragment() {
     override fun onDetach() {
         super.onDetach()
         _binding = null
-        mainActivity.finish()
+        if (!mainActivity.isChangingConfigurations){
+            mainActivity.finish()
+        }
     }
 
     private fun getAllSeriesData() {
