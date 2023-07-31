@@ -157,12 +157,19 @@
                         android:textSize="15sp"/>
                 </LinearLayout>
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerViewDetailContent"
+                <com.halilmasali.moviediscover.ui.CustomItemView
+                    android:id="@+id/itemViewCast"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:nestedScrollingEnabled="false"
-                    />
+                    app:titleText="Cast"
+                    app:refreshText="@string/refresh_text"/>
+
+                <com.halilmasali.moviediscover.ui.CustomItemView
+                    android:id="@+id/itemViewSimilar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:titleText="Similar"
+                    app:refreshText="@string/refresh_text"/>
 
             </LinearLayout>
 

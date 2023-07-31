@@ -7,19 +7,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.addCallback
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.facebook.shimmer.Shimmer
+import com.facebook.shimmer.ShimmerDrawable
 import com.halilmasali.moviediscover.Constants
+import com.halilmasali.moviediscover.R
 import com.halilmasali.moviediscover.dataRepository.DataRepository
 import com.halilmasali.moviediscover.dataRepository.apiRepository.creditsModel.CreditsModelCast
 import com.halilmasali.moviediscover.dataRepository.apiRepository.movies.MovieModelResults
 import com.halilmasali.moviediscover.dataRepository.apiRepository.series.SeriesModelResults
 import com.halilmasali.moviediscover.databinding.FragmentDetailsBinding
-import com.halilmasali.moviediscover.ui.adapters.CustomItemAdapter
-import com.halilmasali.moviediscover.viewModels.ItemsViewModel
 import com.halilmasali.moviediscover.viewModels.SharedViewModel
 
 class DetailsFragment : Fragment() {
@@ -27,12 +27,13 @@ class DetailsFragment : Fragment() {
     private var _binding: FragmentDetailsBinding? = null
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
-    private var adapter: CustomItemAdapter? = null
-    private lateinit var data: ArrayList<ItemsViewModel>
     private lateinit var dataRepository: DataRepository
     private val sharedViewModel: SharedViewModel<Any> by activityViewModels()
-    private var detailType: Any? = null
     private var isLastItem = false
+    private lateinit var shimmer : Shimmer
+
+    // This is the placeholder for the imageView
+    private lateinit var shimmerDrawable :ShimmerDrawable
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,38 +41,9 @@ class DetailsFragment : Fragment() {
     ): View {
         // Inflate the layout for this fragment
         _binding = FragmentDetailsBinding.inflate(inflater, container, false)
-
-        binding.recyclerViewDetailContent.layoutManager = LinearLayoutManager(requireContext())
         dataRepository = DataRepository(this, requireContext())
-        data = ArrayList()
-        for (i in 0..1){
-            data.add(ItemsViewModel())
-        }
-        adapter = CustomItemAdapter(data)
-        binding.recyclerViewDetailContent.adapter = adapter
-        // Calculate the total height of all items in the RecyclerView
-        val totalHeight = calculateTotalItemsHeight(binding.recyclerViewDetailContent)
-        // Set the calculated height to the RecyclerView
-        val params = binding.recyclerViewDetailContent.layoutParams
-        params.height = totalHeight
-        binding.recyclerViewDetailContent.layoutParams = params
-
-        adapter?.setOnItemClickListener(object : CustomItemAdapter.OnItemClickListener {
-            override fun onItemClick(data: Any) {
-                if (data is CreditsModelCast){
-                    Toast.makeText(requireContext(), data.name, Toast.LENGTH_SHORT).show()
-                } else{
-                    sharedViewModel.addDetailData(data)
-                }
-            }
-            override fun onRefreshClick() {
-                if (detailType is SeriesModelResults)
-                    getSeriesDetail((detailType as SeriesModelResults).id!!)
-                else if (detailType is MovieModelResults)
-                    getMovieDetail((detailType as MovieModelResults).id!!)
-            }
-        })
-
+        setClickListeners() // Set click listeners for item views
+        // Get fragment content data
         sharedViewModel.detailDataList.observe(viewLifecycleOwner) { dataList ->
             if (dataList.isNotEmpty()){
                 val lastData = dataList.last()
@@ -81,6 +53,19 @@ class DetailsFragment : Fragment() {
                     isLastItem = dataList.size == 1
                 }
             }
+        }
+        // Shimmer effect for movie card
+        shimmer = Shimmer.ColorHighlightBuilder()// The attributes for a ShimmerDrawable is set by this builder
+            .setBaseColor(ContextCompat.getColor(requireContext(), R.color.gray)) //the base color of the shimmer
+            .setDuration(1000) // how long the shimmering animation takes to do one full sweep
+            .setBaseAlpha(0.7f) //the alpha of the underlying children
+            .setHighlightAlpha(0.6f) // the shimmer alpha amount
+            .setDirection(Shimmer.Direction.LEFT_TO_RIGHT)
+            .setAutoStart(true)
+            .build()
+        // This is the placeholder for the imageView
+        shimmerDrawable = ShimmerDrawable().apply {
+            setShimmer(shimmer)
         }
         return binding.root
     }
@@ -98,27 +83,13 @@ class DetailsFragment : Fragment() {
     }
 
     private fun getSeriesDetail(seriesId:Int){
-        data.clear()
-        dataRepository.getSeriesCast(seriesId).observe(viewLifecycleOwner) { item ->
-            data.add(ItemsViewModel(1,"Cast", item.error, item.data))
-            data.let { adapter!!.addList(it) }
-        }
-        dataRepository.getSeriesSimilar(seriesId).observe(viewLifecycleOwner) { item->
-            data.add(ItemsViewModel(2,"Similar Series", item.error, item.data))
-            data.let { adapter!!.addList(it) }
-        }
+        binding.itemViewCast.setData { dataRepository.getSeriesCast(seriesId) }
+        binding.itemViewSimilar.setData { dataRepository.getSeriesSimilar(seriesId) }
     }
 
-    private fun getMovieDetail(movieId:Int){
-        data.clear()
-        dataRepository.getMovieCast(movieId).observe(viewLifecycleOwner) { item ->
-            data.add(ItemsViewModel(1,"Cast", item.error, item.data))
-            data.let { adapter!!.addList(it) }
-        }
-        dataRepository.getMoviesSimilar(movieId).observe(viewLifecycleOwner) { item ->
-            data.add(ItemsViewModel(2,"Similar Movies", item.error, item.data))
-            data.let { adapter!!.addList(it) }
-        }
+    private fun getMovieDetail(movieId:Int) {
+        binding.itemViewCast.setData { dataRepository.getMovieCast(movieId) }
+        binding.itemViewSimilar.setData { dataRepository.getMoviesSimilar(movieId) }
     }
 
     private fun updateFragmentContent(data:Any){
@@ -126,7 +97,6 @@ class DetailsFragment : Fragment() {
         binding.scrollView.post { binding.scrollView.scrollTo(0,0) }
         when(data){
             is SeriesModelResults -> {
-                detailType = data
                 getSeriesDetail(data.id!!)
                 binding.textTitle.text = data.name
                 binding.textReleaseDate.text = data.firstAirDate
@@ -134,15 +104,18 @@ class DetailsFragment : Fragment() {
                 binding.textOverview.text = data.overview
                 Glide.with(this).load(
                     Constants.ImageBaseUrl + data.backdropPath)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .placeholder(shimmerDrawable)
+                    .error(R.drawable.ic_broken_image)
+                    .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                     .into(binding.imageBackdrop)
                 Glide.with(this).load(
                     Constants.ImageBaseUrl + data.posterPath)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .placeholder(shimmerDrawable)
+                    .error(R.drawable.ic_broken_image)
+                    .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                     .into(binding.imagePoster)
             }
             is MovieModelResults -> {
-                detailType = data
                 getMovieDetail(data.id!!)
                 binding.textTitle.text = data.title
                 binding.textReleaseDate.text = data.releaseDate
@@ -150,29 +123,32 @@ class DetailsFragment : Fragment() {
                 binding.textOverview.text = data.overview
                 Glide.with(this).load(
                     Constants.ImageBaseUrl + data.backdropPath)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .placeholder(shimmerDrawable)
+                    .error(R.drawable.ic_broken_image)
+                    .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                     .into(binding.imageBackdrop)
                 Glide.with(this).load(
                     Constants.ImageBaseUrl + data.posterPath)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .placeholder(shimmerDrawable)
+                    .error(R.drawable.ic_broken_image)
+                    .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                     .into(binding.imagePoster)
             }
         }
     }
 
-    private fun calculateTotalItemsHeight(recyclerView: RecyclerView): Int {
-        val adapter = recyclerView.adapter
-        var totalHeight = 0
-        if (adapter != null) {
-            for (i in 0 until adapter.itemCount) {
-                val itemView = adapter.createViewHolder(recyclerView, adapter.getItemViewType(i)).itemView
-                itemView.measure(
-                    View.MeasureSpec.makeMeasureSpec(recyclerView.width, View.MeasureSpec.EXACTLY),
-                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-                )
-                totalHeight += itemView.measuredHeight
-            }
+    private fun setClickListeners() {
+        binding.itemViewCast.setOnItemClickListener(object : CustomItemView.OnItemClickListener {
+            override fun onItemClick(data: Any) { onItemClicked(data) }})
+        binding.itemViewSimilar.setOnItemClickListener(object : CustomItemView.OnItemClickListener {
+            override fun onItemClick(data: Any) { onItemClicked(data) }})
+    }
+
+    private fun onItemClicked(data: Any) {
+        if (data is CreditsModelCast){
+            Toast.makeText(requireContext(), data.name, Toast.LENGTH_SHORT).show()
+        } else{
+            sharedViewModel.addDetailData(data)
         }
-        return totalHeight
     }
 }
