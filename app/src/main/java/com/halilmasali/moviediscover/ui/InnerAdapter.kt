@@ -1,4 +1,4 @@
-package com.halilmasali.moviediscover.ui.adapters
+package com.halilmasali.moviediscover.ui
 
 import android.content.Context
 import android.view.LayoutInflater

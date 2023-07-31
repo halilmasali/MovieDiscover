@@ -1,4 +1,4 @@
-package com.halilmasali.moviediscover.ui
+package com.halilmasali.moviediscover.ui.fragments
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -20,6 +20,7 @@ import com.halilmasali.moviediscover.dataRepository.apiRepository.creditsModel.C
 import com.halilmasali.moviediscover.dataRepository.apiRepository.movies.MovieModelResults
 import com.halilmasali.moviediscover.dataRepository.apiRepository.series.SeriesModelResults
 import com.halilmasali.moviediscover.databinding.FragmentDetailsBinding
+import com.halilmasali.moviediscover.ui.CustomItemView
 import com.halilmasali.moviediscover.viewModels.SharedViewModel
 
 class DetailsFragment : Fragment() {

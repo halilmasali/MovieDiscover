@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.halilmasali.moviediscover.R
+import com.halilmasali.moviediscover.ui.fragments.CustomFragmentManager
+import com.halilmasali.moviediscover.ui.fragments.MainFragment
 
 
 class MainActivity : AppCompatActivity() {

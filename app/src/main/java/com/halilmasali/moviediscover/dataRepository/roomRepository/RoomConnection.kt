@@ -38,7 +38,6 @@ class RoomConnection(context: Context) {
                 liveData.postValue(data as T)
             else
                 liveData.postValue(null)
-            println("Data from cache: $data")
         }.invokeOnCompletion {
             return@invokeOnCompletion
         }

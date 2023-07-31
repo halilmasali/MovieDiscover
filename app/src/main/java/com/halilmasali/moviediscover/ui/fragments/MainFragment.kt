@@ -1,4 +1,4 @@
-package com.halilmasali.moviediscover.ui
+package com.halilmasali.moviediscover.ui.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.halilmasali.moviediscover.dataRepository.DataRepository
 import com.halilmasali.moviediscover.databinding.FragmentMainBinding
+import com.halilmasali.moviediscover.ui.CustomItemView
+import com.halilmasali.moviediscover.ui.MainActivity
 import com.halilmasali.moviediscover.viewModels.SharedViewModel
 
 class MainFragment : Fragment() {
@@ -84,16 +86,16 @@ class MainFragment : Fragment() {
     }
 
     private fun setClickListeners() {
-        binding.customItemView1.setOnItemClickListener(object:CustomItemView.OnItemClickListener {
+        binding.customItemView1.setOnItemClickListener(object: CustomItemView.OnItemClickListener {
             override fun onItemClick(data: Any) { onItemClicked(data) }
         })
-        binding.customItemView2.setOnItemClickListener(object:CustomItemView.OnItemClickListener {
+        binding.customItemView2.setOnItemClickListener(object: CustomItemView.OnItemClickListener {
             override fun onItemClick(data: Any) { onItemClicked(data) }
         })
-        binding.customItemView3.setOnItemClickListener(object:CustomItemView.OnItemClickListener {
+        binding.customItemView3.setOnItemClickListener(object: CustomItemView.OnItemClickListener {
             override fun onItemClick(data: Any) { onItemClicked(data) }
         })
-        binding.customItemView4.setOnItemClickListener(object:CustomItemView.OnItemClickListener {
+        binding.customItemView4.setOnItemClickListener(object: CustomItemView.OnItemClickListener {
             override fun onItemClick(data: Any) { onItemClicked(data) }
         })
     }

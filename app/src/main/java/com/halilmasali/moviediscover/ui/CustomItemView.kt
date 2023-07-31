@@ -14,7 +14,6 @@ import com.halilmasali.moviediscover.dataRepository.DataResult
 import com.halilmasali.moviediscover.dataRepository.apiRepository.error.ErrorHelper
 import com.halilmasali.moviediscover.dataRepository.apiRepository.error.ExceptionHandler
 import com.halilmasali.moviediscover.databinding.CustomItemViewBinding
-import com.halilmasali.moviediscover.ui.adapters.InnerAdapter
 
 class CustomItemView(context: Context, attrs: AttributeSet?) : ConstraintLayout(context, attrs) {
 

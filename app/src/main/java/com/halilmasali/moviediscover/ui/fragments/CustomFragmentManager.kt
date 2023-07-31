@@ -1,4 +1,4 @@
-package com.halilmasali.moviediscover.ui
+package com.halilmasali.moviediscover.ui.fragments
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
